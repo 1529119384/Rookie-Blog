@@ -1,0 +1,60 @@
+package com.lx.blog.repository.dao.impl.mapper.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+/**
+ * @author 李旭
+ * @date 2025/12/03
+ * @description 文章收藏记录实体
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@TableName("article_favorite")
+public class ArticleFavorite {
+
+    /**
+     * 收藏记录ID
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
+
+    /**
+     * 文章ID
+     */
+    @TableField("article_id")
+    private String articleId;
+
+    /**
+     * 用户ID
+     */
+    @TableField("user_id")
+    private String userId;
+
+    /**
+     * 收藏时间
+     */
+    @TableField("favorited_at")
+    private LocalDateTime favoritedAt;
+
+    /**
+     * 创建时间
+     */
+    @TableField("created_at")
+    private LocalDateTime createdAt;
+
+    /**
+     * 更新时间
+     */
+    @TableField("updated_at")
+    private LocalDateTime updatedAt;
+}
+

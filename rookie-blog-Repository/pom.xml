@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <artifactId>Rookie-Blog</artifactId>
+        <groupId>com.lx</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>user-repository</module>
+        <module>article-repository</module>
+    </modules>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>rookie-blog-repository</artifactId>
+
+    <dependencies>
+        <!-- MySQL Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lx</groupId>
+            <artifactId>rookie-blog-common</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lx</groupId>
+            <artifactId>rookie-blog-domain</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- MyBatis Plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

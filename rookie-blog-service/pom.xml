@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <artifactId>Rookie-Blog</artifactId>
+        <groupId>com.lx</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>user-service</module>
+        <module>article-service</module>
+        <module>file-service</module>
+        <module>search-service</module>
+        <module>email-service</module>
+    </modules>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>rookie-blog-service</artifactId>
+
+    <dependencies>
+        <!-- Repository 模块 -->
+        <dependency>
+            <groupId>com.lx</groupId>
+            <artifactId>user-repository</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lx</groupId>
+            <artifactId>rookie-blog-common</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 事务支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
