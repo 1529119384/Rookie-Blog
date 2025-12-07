@@ -67,7 +67,7 @@ onMounted(() => {
   canvas.height = height;
 
   const particles: Particle[] = [];
-  const particleCount = Math.min(width / 10, 100); // Responsive count
+  // const particleCount moved to logic below
   const connectionDistance = 150;
   const mouseDistance = 200;
 
@@ -98,8 +98,22 @@ onMounted(() => {
     }, 150); // Resume after 150ms of no scroll
   };
 
+  // Optimization for Mobile: Check if device is low-end or mobile
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) {
+    // Disable or reduce particles on mobile
+    // Here we just return to avoid running canvas on mobile if performance is critical
+    // Or reduce count drastically
+  }
+  
+  // Mobile Optimization: Reduced particle count
+  const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  const particleCount = isMobileDevice ? 20 : Math.min(width / 10, 100); 
+
   window.addEventListener('resize', handleResize);
-  window.addEventListener('mousemove', handleMouseMove);
+  if (!isMobileDevice) {
+    window.addEventListener('mousemove', handleMouseMove);
+  }
   window.addEventListener('scroll', handleScroll, { passive: true });
 
   // Init particles
@@ -110,8 +124,8 @@ onMounted(() => {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
+      vx: (Math.random() - 0.5) * (isMobileDevice ? 0.2 : 0.5),
+      vy: (Math.random() - 0.5) * (isMobileDevice ? 0.2 : 0.5),
       size: Math.random() * 2 + 1,
       color: type === 0 ? currentColors.color1 : currentColors.color2,
       type: type as 0 | 1

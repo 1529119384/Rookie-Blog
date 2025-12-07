@@ -8,6 +8,7 @@ import InteractiveBackground from './components/InteractiveBackground.vue';
 import SvgSprite from './components/SvgSprite.vue';
 import JavaHelloLoader from './components/JavaHelloLoader.vue';
 import Toast from './components/Toast.vue';
+import CookieNotice from './components/CookieNotice.vue';
 import { useUserStore } from './store/user';
 import { useAppStore } from './store/app';
 import { useTheme } from './composables/useTheme';
@@ -42,6 +43,7 @@ watch(locale, (newLocale) => {
   <div class="app-layout">
     <SvgSprite />
     <Toast />
+    <CookieNotice />
     <transition name="fade">
       <JavaHelloLoader v-if="isLoading" />
     </transition>

@@ -42,9 +42,9 @@ import {
 } from '../api/comment';
 import { getUserPublicProfile } from '../api/user';
 import { useUserStore } from '../store/user';
-// Removed manual marked import as we use MdPreview
-import { MdPreview } from 'md-editor-v3';
-import 'md-editor-v3/lib/preview.css';
+// import { MdPreview } from 'md-editor-v3'; // Removed, using MarkdownViewer
+// import 'md-editor-v3/lib/preview.css'; // Removed
+import MarkdownViewer from '../components/MarkdownViewer.vue';
 import { useTheme } from '../composables/useTheme';
 
 const { t } = useI18n();
@@ -66,7 +66,7 @@ const handleCopyClick = (e: MouseEvent) => {
     // MdEditor v3 handles the copy, we just show the toast
     // We can delay slightly to ensure it felt like a completed action
     setTimeout(() => {
-      addToast('Copied to clipboard successfully!', 'success');
+      addToast(t('articleDetail.copied'), 'success');
     }, 100);
   }
 };
@@ -382,15 +382,15 @@ const loadArticle = async (slug: string) => {
               articleHtml.value = contentData.content;
               articleContent.value = '';
            } else {
-              articleContent.value = article.value?.summary || '# No content available.';
+              articleContent.value = article.value?.summary || `# ${t('articleDetail.noContent')}`;
            }
         } else {
            console.warn('Content response format not recognized', contentRes);
-           articleContent.value = article.value?.summary || '# No content available.';
+           articleContent.value = article.value?.summary || `# ${t('articleDetail.noContent')}`;
         }
       } catch (contentError) {
         console.error('Failed to fetch article content:', contentError);
-        articleContent.value = article.value?.summary || '# Failed to load content.';
+        articleContent.value = article.value?.summary || `# ${t('articleDetail.loadFailed')}`;
       }
 
       // 3. Get Comments
@@ -507,7 +507,7 @@ const findCommentById = (items: UIComment[], id: number): UIComment | undefined 
 
 const handleVote = async (commentId: number, type: 'like' | 'dislike') => {
   if (!isLoggedIn.value) {
-    alert('Please login to vote.');
+    alert(t('articleDetail.loginToVote'));
     return;
   }
 
@@ -539,7 +539,7 @@ const handleVote = async (commentId: number, type: 'like' | 'dislike') => {
 const handleReply = async (commentId: number, content: string) => {
   if (!article.value) return;
   if (!isLoggedIn.value) {
-    alert('Please login to reply.');
+    alert(t('articleDetail.loginToReply'));
     return;
   }
   
@@ -601,7 +601,7 @@ const handleReply = async (commentId: number, content: string) => {
 const submitComment = async () => {
   if (!newComment.value || !article.value) return;
   if (!isLoggedIn.value) {
-    alert('Please login to comment.');
+    alert(t('articleDetail.loginToComment'));
     return;
   }
   
@@ -622,7 +622,7 @@ const submitComment = async () => {
 const toggleLike = async () => {
   if (!article.value) return;
   if (!isLoggedIn.value) {
-    alert('Please login to like.');
+    alert(t('articleDetail.loginToLike'));
     return;
   }
   try {
@@ -643,7 +643,7 @@ const toggleLike = async () => {
 const toggleFavorite = async () => {
   if (!article.value) return;
   if (!isLoggedIn.value) {
-    alert('Please login to favorite.');
+    alert(t('articleDetail.loginToFavorite'));
     return;
   }
   try {
@@ -664,10 +664,10 @@ const toggleFavorite = async () => {
 const toggleShare = async () => {
   try {
     await navigator.clipboard.writeText(window.location.href);
-    addToast('链接已复制，快去分享吧！', 'success');
+    addToast(t('articleDetail.copied'), 'success');
   } catch (err) {
     console.error('Failed to copy:', err);
-    addToast('复制失败，请手动分享', 'error');
+    addToast(t('articleDetail.copyFailed'), 'error');
   }
 };
 
@@ -701,7 +701,7 @@ const handleEdit = () => {
   </div>
     <div class="container article-layout" v-else-if="!article && !isLoading">
        <div class="glass-panel" style="padding: 2rem; text-align: center;">
-         Article not found.
+         {{ t('articleDetail.notFound') }}
        </div>
     </div>
     <div class="container article-layout" v-else>
@@ -711,7 +711,7 @@ const handleEdit = () => {
           <div class="article-meta">
             <span class="date">{{ d(new Date(article.publishAt || article.createdAt), 'long') }}</span>
             <span class="dot">•</span>
-            <span class="read-time">{{ article.readingTimeMinutes || 5 }} min read</span>
+            <span class="read-time">{{ article.readingTimeMinutes || 5 }} {{ t('articleDetail.minRead') }}</span>
             <span class="dot" v-if="article.tags && article.tags.length > 0">•</span>
             <div class="tags" v-if="article.tags && article.tags.length > 0">
               <TagBadge v-for="tag in article.tags" :key="tag" :label="tag" size="sm" />
@@ -734,16 +734,10 @@ const handleEdit = () => {
         </header>
 
         <div class="article-body">
-           <MdPreview 
+           <MarkdownViewer 
              v-if="articleContent" 
-             :modelValue="articleContent" 
-             :theme="theme" 
-             preview-theme="github" 
+             :content="articleContent"
              style="background: transparent;"
-             :code-theme="theme === 'dark' ? 'atom' : 'github'"
-             :no-katex="true"
-             :no-mermaid="true"
-             :no-img-zoom-in="true"
            />
            <div v-else-if="articleHtml" v-html="articleHtml"></div>
            <div class="skeleton-body" v-else-if="isLoading">
@@ -778,7 +772,7 @@ const handleEdit = () => {
           :to="{ name: 'article-detail', params: { id: prevArticle.id } }" 
           class="nav-link prev"
         >
-          <span class="nav-label">← Previous</span>
+          <span class="nav-label">← {{ t('articleDetail.previous') }}</span>
           <span class="nav-title">{{ prevArticle.title }}</span>
         </router-link>
         <div v-else class="nav-spacer"></div>
@@ -790,7 +784,7 @@ const handleEdit = () => {
           :to="{ name: 'article-detail', params: { id: nextArticle.id } }" 
           class="nav-link next"
         >
-          <span class="nav-label">Next →</span>
+          <span class="nav-label">{{ t('articleDetail.next') }} →</span>
           <span class="nav-title">{{ nextArticle.title }}</span>
         </router-link>
         <div v-else class="nav-spacer"></div>
@@ -862,6 +856,7 @@ const handleEdit = () => {
 
 <style lang="scss" scoped>
 @use '../styles/variables' as *;
+@use '../styles/markdown' as *;
 
 .article-layout {
   display: grid;
@@ -947,15 +942,8 @@ const handleEdit = () => {
   // contain: layout paint; // REMOVED: Can cause issues with sticky elements or overlays
 }
 
-/* Optimize images within markdown preview */
-:deep(.md-editor-preview img) {
-  loading: lazy; /* Native lazy loading */
-  // content-visibility: auto; // REMOVED: Can cause jumpy images during scroll
-  max-width: 100%;
-  height: auto;
-  display: block; /* Avoid inline layout reflows */
-  will-change: transform; // Hint to browser for composition
-}
+/* Optimize images within markdown preview - handled by markdown mixin now */
+/* Removed duplicated image styles */
 
 .glass-panel {
   // Performance Optimization: 
@@ -1076,198 +1064,11 @@ const handleEdit = () => {
   }
 }
 
-.article-body {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: $color-text-secondary;
-  margin-bottom: $spacing-xl;
-  overflow-wrap: break-word; /* Break long words */
-  word-wrap: break-word;
-  min-height: 200px; // Prevent collapse when empty
-
-  @media (max-width: $breakpoint-mobile) {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: $spacing-lg;
+  .article-body {
+    @include markdown-styles; // Use shared markdown styles
+    margin-bottom: $spacing-xl;
+    min-height: 200px; // Prevent collapse when empty
   }
-
-  :deep(h2) {
-    font-size: 1.8rem;
-    margin: $spacing-xl 0 $spacing-md;
-    color: $color-text-primary;
-
-    @media (max-width: $breakpoint-mobile) {
-      font-size: 1.4rem;
-      margin: $spacing-lg 0 $spacing-sm;
-    }
-  }
-
-  :deep(p) {
-    margin-bottom: $spacing-md;
-    
-    // Handle align center attribute in HTML p tag
-    &[align="center"] {
-      text-align: center;
-      
-      img {
-        margin: 0 auto;
-      }
-    }
-  }
-
-  :deep(ul), :deep(ol) {
-    margin-bottom: $spacing-md;
-    padding-left: $spacing-lg;
-    
-    li {
-      margin-bottom: $spacing-xs;
-    }
-  }
-
-  :deep(pre) {
-    overflow-x: auto;
-    max-width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    padding: $spacing-md;
-    border-radius: 8px;
-    margin-bottom: $spacing-md;
-    -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    
-    code {
-      font-family: $font-family-code;
-      color: $color-text-primary;
-    }
-  }
-
-  :deep(img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: $radius-md;
-    margin: $spacing-md 0;
-    display: block;
-    background: transparent !important;
-    
-    // Fix for inline images like badges/icons
-    &[valign="middle"], &[valign="bottom"] {
-      display: inline-block;
-      margin: 0 4px;
-      vertical-align: middle;
-    }
-  }
-
-  :deep(table) {
-    display: block;
-    width: fit-content;
-    overflow-x: auto;
-    max-width: 100%;
-    margin-bottom: $spacing-md;
-    border-collapse: separate;
-    border-spacing: 0;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid $color-border !important;
-    background: transparent !important;
-    
-    &[align="center"] {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    
-    tr {
-      background-color: transparent !important;
-    }
-
-    tr:nth-child(2n) {
-      background-color: rgba(0, 0, 0, 0.02) !important;
-    }
-    
-    th, td {
-      padding: $spacing-sm $spacing-md;
-      border-right: 1px solid $color-border !important;
-      border-bottom: 1px solid $color-border !important;
-      border-left: none !important;
-      border-top: none !important;
-      
-      min-width: 6.25rem;
-      color: $color-text-primary;
-      background-color: transparent !important;
-      vertical-align: top;
-      
-      &:last-child {
-        border-right: none !important;
-      }
-
-      ul, ol {
-        padding-left: 1.2rem;
-        margin-bottom: 0;
-      }
-    }
-
-    tr:last-child td {
-      border-bottom: none !important;
-    }
-
-    th {
-      background: rgba(0, 0, 0, 0.04) !important;
-      font-weight: 600;
-      text-align: left;
-    }
-
-    // Responsive fix
-    @media (max-width: $breakpoint-mobile) {
-      display: block;
-      background: transparent !important;
-      border: none !important;
-      border-radius: 0;
-      
-      tbody {
-        display: block;
-      }
-
-      tr {
-        display: flex;
-        flex-wrap: wrap;
-        background: transparent !important;
-        margin-bottom: $spacing-md;
-        border-radius: 8px;
-        border: 1px solid $color-border !important;
-        overflow: hidden;
-      }
-      
-      td {
-        width: 100% !important;
-        display: block;
-        border-right: none !important;
-        border-left: none !important; 
-        border-top: none !important;
-        border-bottom: 1px solid $color-border !important;
-        
-        &:last-child {
-          border-bottom: none !important;
-        }
-      }
-      
-      thead {
-        display: none;
-      }
-    }
-  }
-
-  :deep(blockquote) {
-    margin: $spacing-md 0;
-    padding: $spacing-md;
-    border-left: 4px solid $color-accent-primary;
-    background: rgba($color-accent-primary, 0.05);
-    border-radius: 0 8px 8px 0;
-    color: $color-text-secondary;
-    
-    p {
-      margin: 0;
-    }
-  }
-}
 
 .loading-placeholder {
   min-height: 400px;

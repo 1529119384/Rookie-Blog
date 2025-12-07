@@ -4,10 +4,49 @@ import { useI18n } from 'vue-i18n';
 import ArticleCard from '../components/ArticleCard.vue';
 import AvatarGenerator from '../components/AvatarGenerator.vue';
 import { useUserStore } from '../store/user';
-import { requestEmailVerification } from '../api/auth';
+import { requestEmailVerification, updateUserInfo, type UpdateProfileDto } from '../api/auth';
 
 const { t } = useI18n();
-const { user: currentUser } = useUserStore();
+const { user: currentUser, fetchUserInfo } = useUserStore();
+
+const profileForm = ref<UpdateProfileDto>({
+  username: '',
+  bio: '',
+  avatarUrl: ''
+});
+
+const isProfileUpdating = ref(false);
+
+// Sync form with user data
+watchEffect(() => {
+  if (currentUser.value) {
+    profileForm.value = {
+      username: currentUser.value.username,
+      bio: currentUser.value.bio || '',
+      avatarUrl: currentUser.value.avatarUrl
+    };
+  }
+});
+
+const handleUpdateProfile = async () => {
+  if (!currentUser.value) return;
+  
+  isProfileUpdating.value = true;
+  try {
+    const res = await updateUserInfo(profileForm.value);
+    if (res.isSuccess) {
+      await fetchUserInfo();
+      alert(t('profile.updateSuccess') || 'Profile updated successfully');
+    } else {
+      alert(res.errMsg || 'Failed to update profile');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred');
+  } finally {
+    isProfileUpdating.value = false;
+  }
+};
 
 const activeTab = ref('favorites');
 const tabs = computed(() => [
@@ -222,153 +261,214 @@ onUnmounted(() => {
         </button>
       </nav>
 
-      <div class="tab-content" v-if="activeTab === 'favorites'">
-        <div class="articles-grid" v-if="mockArticles.length">
-          <ArticleCard v-for="article in mockArticles" :key="article.id" v-bind="article" />
-        </div>
-        <div v-else class="empty-state">
-          <p>{{ t('profile.noFavorites') }}</p>
-        </div>
-      </div>
-
-      <div class="tab-content" v-if="activeTab === 'history'">
-        <div class="history-list" v-if="mockArticles.length">
-          <div v-for="article in mockArticles" :key="article.id" class="history-item glass-panel">
-            <div class="history-info">
-              <span class="history-date">{{ t('profile.viewedOn') }} {{ article.date }}</span>
-              <h3>{{ article.title }}</h3>
-            </div>
-            <button class="view-btn">{{ t('profile.readAgain') }}</button>
+      <Transition name="fade-slide" mode="out-in">
+        <div class="tab-content" v-if="activeTab === 'favorites'" key="favorites">
+          <div class="articles-grid" v-if="mockArticles.length">
+            <ArticleCard v-for="article in mockArticles" :key="article.id" v-bind="article" />
+          </div>
+          <div v-else class="empty-state">
+            <p>{{ t('profile.noFavorites') }}</p>
           </div>
         </div>
-        <div v-else class="empty-state">
-          <p>{{ t('profile.noHistory') }}</p>
-        </div>
-      </div>
 
-      <div class="tab-content settings-panel glass-panel" v-if="activeTab === 'settings'">
-        <!-- Account Security Section -->
-        <section class="setting-section">
-          <h3>{{ t('profile.accountSecurity') }}</h3>
-          
-          <!-- Email Verification -->
-          <div class="security-card">
-            <div class="card-header">
-              <span class="label">{{ t('profile.emailAddress') }}</span>
-              <span 
-                class="status-badge" 
-                :class="emailStatus === 'verified' ? 'verified' : 'unverified'"
-              >
-                {{ emailStatus === 'verified' ? t('profile.verified') : t('profile.unverified') }}
-              </span>
+        <div class="tab-content" v-else-if="activeTab === 'history'" key="history">
+          <div class="history-list" v-if="mockArticles.length">
+            <div v-for="article in mockArticles" :key="article.id" class="history-item glass-panel">
+              <div class="history-info">
+                <span class="history-date">{{ t('profile.viewedOn') }} {{ article.date }}</span>
+                <h3>{{ article.title }}</h3>
+              </div>
+              <button class="view-btn">{{ t('profile.readAgain') }}</button>
             </div>
-            <div class="card-body">
-              <div class="current-email">{{ user.email }}</div>
-              
-              <div class="action-row" v-if="emailStatus !== 'verified'">
+          </div>
+          <div v-else class="empty-state">
+            <p>{{ t('profile.noHistory') }}</p>
+          </div>
+        </div>
+
+        <div class="tab-content settings-panel glass-panel" v-else-if="activeTab === 'settings'" key="settings">
+          <!-- Profile Information Section -->
+          <section class="setting-section">
+            <h3>{{ t('profile.profileInfo') }}</h3>
+            
+            <div class="form-grid">
+              <!-- Avatar URL -->
+              <div class="form-group avatar-group">
+                <label>{{ t('profile.avatarUrl') }}</label>
+                <div class="input-with-preview">
+                  <div class="input-wrapper">
+                    <input 
+                      type="text" 
+                      v-model="profileForm.avatarUrl"
+                      :placeholder="t('profile.enterAvatarUrl')"
+                    />
+                  </div>
+                  <div class="avatar-preview-small" v-if="profileForm.avatarUrl">
+                    <img :src="profileForm.avatarUrl" alt="Preview" @error="(e) => (e.target as HTMLImageElement).style.display = 'none'" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div class="form-group username-group">
+                <label>{{ t('profile.username') }}</label>
+                <div class="input-wrapper">
+                  <input 
+                    type="text" 
+                    v-model="profileForm.username"
+                    :placeholder="t('profile.enterUsername')"
+                  />
+                </div>
+              </div>
+
+              <!-- Bio -->
+              <div class="form-group bio-group">
+                <label>{{ t('profile.bio') }}</label>
+                <div class="input-wrapper">
+                  <textarea 
+                    v-model="profileForm.bio"
+                    :placeholder="t('profile.enterBio')"
+                    class="bio-input"
+                    rows="2"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
                 <button 
                   class="btn-primary" 
-                  @click="sendVerificationEmail" 
-                  :disabled="emailStatus === 'sending' || emailTimer > 0"
+                  @click="handleUpdateProfile" 
+                  :disabled="isProfileUpdating"
                 >
-                  {{ emailStatus === 'sending' ? t('profile.sending') : (emailTimer > 0 ? t('profile.resendIn', { seconds: emailTimer }) : t('profile.sendVerification')) }}
+                  {{ isProfileUpdating ? t('common.saving', 'Saving...') : t('common.saveChanges', 'Save Changes') }}
                 </button>
-                <p class="helper-text" v-if="emailStatus === 'sent'">
-                  {{ t('profile.verificationSent') }}
-                </p>
               </div>
             </div>
+          </section>
+
+          <!-- Account Security Section -->
+          <section class="setting-section">
+            <h3>{{ t('profile.accountSecurity') }}</h3>
+            
+            <!-- Email Verification -->
+            <div class="security-card">
+              <div class="card-header">
+                <span class="label">{{ t('profile.emailAddress') }}</span>
+                <span 
+                  class="status-badge" 
+                  :class="emailStatus === 'verified' ? 'verified' : 'unverified'"
+                >
+                  {{ emailStatus === 'verified' ? t('profile.verified') : t('profile.unverified') }}
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="current-email">{{ user.email }}</div>
+                
+                <div class="action-row" v-if="emailStatus !== 'verified'">
+                  <button 
+                    class="btn-primary" 
+                    @click="sendVerificationEmail" 
+                    :disabled="emailStatus === 'sending' || emailTimer > 0"
+                  >
+                    {{ emailStatus === 'sending' ? t('profile.sending') : (emailTimer > 0 ? t('profile.resendIn', { seconds: emailTimer }) : t('profile.sendVerification')) }}
+                  </button>
+                  <p class="helper-text" v-if="emailStatus === 'sent'">
+                    {{ t('profile.verificationSent') }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Password Change -->
+            <div class="security-card">
+              <div class="card-header">
+                <span class="label">{{ t('profile.changePassword') }}</span>
+              </div>
+              <div class="card-body form-stack">
+                <!-- Current Password -->
+                <div class="form-group span-full">
+                  <label>{{ t('profile.currentPassword') }}</label>
+                  <div class="input-wrapper">
+                    <input 
+                      :type="showPassword.current ? 'text' : 'password'" 
+                      v-model="passwordForm.current"
+                      :placeholder="t('profile.enterCurrentPassword')"
+                    />
+                    <button class="toggle-visibility" @click="showPassword.current = !showPassword.current">
+                      {{ showPassword.current ? t('profile.hide') : t('profile.show') }}
+                    </button>
+                  </div>
+                  <span class="error-msg" v-if="passwordErrors.current">{{ passwordErrors.current }}</span>
+                </div>
+
+                <!-- New Password -->
+                <div class="form-group">
+                  <label>{{ t('profile.newPassword') }}</label>
+                  <div class="input-wrapper">
+                    <input 
+                      :type="showPassword.new ? 'text' : 'password'" 
+                      v-model="passwordForm.new"
+                      :placeholder="t('profile.enterNewPassword')"
+                    />
+                    <button class="toggle-visibility" @click="showPassword.new = !showPassword.new">
+                      {{ showPassword.new ? t('profile.hide') : t('profile.show') }}
+                    </button>
+                  </div>
+                  <span class="error-msg" v-if="passwordErrors.new">{{ passwordErrors.new }}</span>
+                  <ul class="password-requirements">
+                    <li :class="{ met: /[A-Z]/.test(passwordForm.new) }">{{ t('profile.uppercase') }}</li>
+                    <li :class="{ met: /[a-z]/.test(passwordForm.new) }">{{ t('profile.lowercase') }}</li>
+                    <li :class="{ met: /[0-9]/.test(passwordForm.new) }">{{ t('profile.number') }}</li>
+                    <li :class="{ met: passwordForm.new.length >= 8 }">{{ t('profile.minChars') }}</li>
+                  </ul>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                  <label>{{ t('profile.confirmNewPassword') }}</label>
+                  <div class="input-wrapper">
+                    <input 
+                      :type="showPassword.confirm ? 'text' : 'password'" 
+                      v-model="passwordForm.confirm"
+                      :placeholder="t('profile.confirmNewPasswordPlaceholder')"
+                    />
+                    <button class="toggle-visibility" @click="showPassword.confirm = !showPassword.confirm">
+                      {{ showPassword.confirm ? t('profile.hide') : t('profile.show') }}
+                    </button>
+                  </div>
+                  <span class="error-msg" v-if="passwordErrors.confirm">{{ passwordErrors.confirm }}</span>
+                </div>
+
+                <button class="btn-primary full-width" @click="updatePassword">{{ t('profile.updatePassword') }}</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="setting-group">
+            <h3>{{ t('profile.appearance') }}</h3>
+            <label class="toggle-row">
+              <span>{{ t('profile.darkMode') }}</span>
+              <input type="checkbox" checked />
+            </label>
+            <label class="toggle-row">
+              <span>{{ t('profile.reducedMotion') }}</span>
+              <input type="checkbox" />
+            </label>
           </div>
-
-          <!-- Password Change -->
-          <div class="security-card">
-            <div class="card-header">
-              <span class="label">{{ t('profile.changePassword') }}</span>
-            </div>
-            <div class="card-body form-stack">
-              <!-- Current Password -->
-              <div class="form-group span-full">
-                <label>{{ t('profile.currentPassword') }}</label>
-                <div class="input-wrapper">
-                  <input 
-                    :type="showPassword.current ? 'text' : 'password'" 
-                    v-model="passwordForm.current"
-                    :placeholder="t('profile.enterCurrentPassword')"
-                  />
-                  <button class="toggle-visibility" @click="showPassword.current = !showPassword.current">
-                    {{ showPassword.current ? t('profile.hide') : t('profile.show') }}
-                  </button>
-                </div>
-                <span class="error-msg" v-if="passwordErrors.current">{{ passwordErrors.current }}</span>
-              </div>
-
-              <!-- New Password -->
-              <div class="form-group">
-                <label>{{ t('profile.newPassword') }}</label>
-                <div class="input-wrapper">
-                  <input 
-                    :type="showPassword.new ? 'text' : 'password'" 
-                    v-model="passwordForm.new"
-                    :placeholder="t('profile.enterNewPassword')"
-                  />
-                  <button class="toggle-visibility" @click="showPassword.new = !showPassword.new">
-                    {{ showPassword.new ? t('profile.hide') : t('profile.show') }}
-                  </button>
-                </div>
-                <span class="error-msg" v-if="passwordErrors.new">{{ passwordErrors.new }}</span>
-                <ul class="password-requirements">
-                  <li :class="{ met: /[A-Z]/.test(passwordForm.new) }">{{ t('profile.uppercase') }}</li>
-                  <li :class="{ met: /[a-z]/.test(passwordForm.new) }">{{ t('profile.lowercase') }}</li>
-                  <li :class="{ met: /[0-9]/.test(passwordForm.new) }">{{ t('profile.number') }}</li>
-                  <li :class="{ met: passwordForm.new.length >= 8 }">{{ t('profile.minChars') }}</li>
-                </ul>
-              </div>
-
-              <!-- Confirm Password -->
-              <div class="form-group">
-                <label>{{ t('profile.confirmNewPassword') }}</label>
-                <div class="input-wrapper">
-                  <input 
-                    :type="showPassword.confirm ? 'text' : 'password'" 
-                    v-model="passwordForm.confirm"
-                    :placeholder="t('profile.confirmNewPasswordPlaceholder')"
-                  />
-                  <button class="toggle-visibility" @click="showPassword.confirm = !showPassword.confirm">
-                    {{ showPassword.confirm ? t('profile.hide') : t('profile.show') }}
-                  </button>
-                </div>
-                <span class="error-msg" v-if="passwordErrors.confirm">{{ passwordErrors.confirm }}</span>
-              </div>
-
-              <button class="btn-primary full-width" @click="updatePassword">{{ t('profile.updatePassword') }}</button>
-            </div>
+          
+          <div class="setting-group">
+            <h3>{{ t('profile.notifications') }}</h3>
+            <label class="toggle-row">
+              <span>{{ t('profile.emailDigest') }}</span>
+              <input type="checkbox" checked />
+            </label>
+            <label class="toggle-row">
+              <span>{{ t('profile.newComments') }}</span>
+              <input type="checkbox" checked />
+            </label>
           </div>
-        </section>
-
-        <div class="setting-group">
-          <h3>{{ t('profile.appearance') }}</h3>
-          <label class="toggle-row">
-            <span>{{ t('profile.darkMode') }}</span>
-            <input type="checkbox" checked />
-          </label>
-          <label class="toggle-row">
-            <span>{{ t('profile.reducedMotion') }}</span>
-            <input type="checkbox" />
-          </label>
         </div>
-        
-        <div class="setting-group">
-          <h3>{{ t('profile.notifications') }}</h3>
-          <label class="toggle-row">
-            <span>{{ t('profile.emailDigest') }}</span>
-            <input type="checkbox" checked />
-          </label>
-          <label class="toggle-row">
-            <span>{{ t('profile.newComments') }}</span>
-            <input type="checkbox" checked />
-          </label>
-        </div>
-      </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -385,7 +485,7 @@ onUnmounted(() => {
 
 .glass-panel {
   background: $color-card-bg;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur($backdrop-blur);
   border: 1px solid $color-card-border;
   border-radius: 16px;
   box-shadow: $shadow-card;
@@ -603,11 +703,11 @@ onUnmounted(() => {
   }
 
   .security-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: $color-bg-secondary;
     border-radius: 12px;
     padding: $spacing-lg;
     margin-bottom: $spacing-lg;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid $color-border;
 
     .card-header {
       display: flex;
@@ -649,20 +749,45 @@ onUnmounted(() => {
     }
   }
 
-  .form-stack {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-lg;
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    @media (min-width: 769px) {
+      grid-template-columns: 1.5fr 1fr; /* Avatar takes more space, Username less */
+      grid-template-areas: 
+        "avatar username"
+        "bio bio"
+        "actions actions";
+      align-items: start;
+
+      .avatar-group { grid-area: avatar; }
+      .username-group { grid-area: username; }
+      .bio-group { grid-area: bio; }
+      .form-actions { grid-area: actions; }
+    }
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px; /* Reduced gap */
 
     label {
-      font-size: 0.9rem;
+      font-size: 0.85rem; /* Smaller label */
       color: $color-text-secondary;
+      font-weight: 500;
+    }
+    
+    .input-with-preview {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      
+      .input-wrapper {
+        flex: 1;
+      }
     }
 
     .input-wrapper {
@@ -670,20 +795,31 @@ onUnmounted(() => {
       display: flex;
       align-items: center;
 
-      input {
+      input, textarea {
         width: 100%;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: $color-input-bg;
+        border: 1px solid $color-input-border;
         border-radius: 8px;
-        padding: 10px 12px;
+        padding: 8px 12px; /* Compact padding */
         color: $color-text-primary;
-        padding-right: 60px; // Space for toggle button
-        transition: border-color 0.3s;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        font-family: inherit;
+        font-size: 0.95rem;
 
         &:focus {
           outline: none;
           border-color: $color-accent-primary;
+          box-shadow: 0 0 0 2px $color-input-focus-ring;
         }
+      }
+
+      input {
+        padding-right: 36px;
+      }
+      
+      textarea {
+        resize: vertical;
+        min-height: 70px; /* Compact height */
       }
 
       .toggle-visibility {
@@ -705,6 +841,33 @@ onUnmounted(() => {
     .error-msg {
       font-size: 0.8rem;
       color: #ef4444;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: $spacing-sm;
+
+    .btn-primary {
+      width: auto;
+      min-width: 120px;
+    }
+  }
+
+  .avatar-preview-small {
+    margin-top: 0; /* Align with input */
+    width: 42px; /* Smaller preview */
+    height: 42px;
+    border-radius: 8px; /* Square with radius looks more modern here */
+    overflow: hidden;
+    border: 1px solid $color-border;
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 
@@ -732,7 +895,7 @@ onUnmounted(() => {
 
   .btn-primary {
     background: $color-accent-primary;
-    color: #000;
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
@@ -862,6 +1025,22 @@ onUnmounted(() => {
   .verification-form {
     max-width: 400px;
   }
+}
+
+/* Transitions */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 /* Mobile Responsiveness */

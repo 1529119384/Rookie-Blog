@@ -81,13 +81,15 @@ const containerClass = computed(() => `footer-logo footer-logo--${props.variant}
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) translateZ(0); /* Hardware acceleration */
         width: 150%;
         height: 150%;
         background: radial-gradient(circle, rgba($color-accent-primary, 0.2) 0%, transparent 70%);
         filter: blur(10px);
         opacity: 0;
         transition: opacity 0.4s ease;
+        will-change: opacity; /* Optimize animation */
+        pointer-events: none; /* Prevent interference */
       }
     }
 
@@ -127,17 +129,19 @@ const containerClass = computed(() => `footer-logo footer-logo--${props.variant}
     .logo-icon-wrapper {
       position: relative;
       transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform; /* Optimize transform animation */
       
       .logo-glow {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) translateZ(0); /* Hardware acceleration */
         width: 200%;
         height: 200%;
         background: radial-gradient(circle, rgba($color-accent-secondary, 0.15) 0%, transparent 60%);
         filter: blur(15px);
         z-index: -1;
+        backface-visibility: hidden; /* Prevent flickering */
       }
     }
 

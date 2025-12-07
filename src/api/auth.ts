@@ -20,6 +20,13 @@ export interface UpdatePasswordDto {
   confirmPassword: string;
 }
 
+export interface UpdateProfileDto {
+  username?: string;
+  email?: string;
+  avatarUrl?: string;
+  bio?: string;
+}
+
 export interface SaTokenInfo {
   tokenName: string;
   tokenValue: string;
@@ -66,6 +73,7 @@ export interface UserDto {
   email: string;
   status: number;
   avatarUrl: string;
+  bio?: string;
   emailVerified: boolean;
   ipAddress: string;
   lastLogin: string;
@@ -80,6 +88,10 @@ export interface ResultUserDto {
 
 export const getUserInfo = () => {
   return request.get<any, ResultUserDto>('/api/user/profile/info');
+};
+
+export const updateUserInfo = (data: UpdateProfileDto) => {
+  return request.post<any, ResultObject>('/api/user/profile/update', data);
 };
 
 export const logout = () => {

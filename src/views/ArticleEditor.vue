@@ -432,6 +432,7 @@ const submitArticle = async () => {
 
 <style lang="scss" scoped>
 @use '../styles/variables' as *;
+@use '../styles/markdown' as *;
 
 .editor-layout {
   display: flex;
@@ -698,119 +699,8 @@ const submitArticle = async () => {
     font-family: $font-family-code;
   }
 
-  // Preview Styles from ArticleDetail
-  :deep(.md-editor-preview) {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: $color-text-secondary;
-    word-wrap: break-word;
-
-    h1, h2, h3, h4, h5, h6 {
-      color: $color-text-primary;
-    }
-
-    h2 {
-      font-size: 1.8rem;
-      margin: $spacing-xl 0 $spacing-md;
-    }
-
-    p {
-      margin-bottom: $spacing-md;
-      
-      &[align="center"] {
-        text-align: center;
-        img { 
-          margin: 0 auto; 
-          display: inline-block;
-        }
-      }
-    }
-
-    ul, ol {
-      margin-bottom: $spacing-md;
-      padding-left: $spacing-lg;
-      li { margin-bottom: $spacing-xs; }
-    }
-
-    pre {
-      background: rgba(255, 255, 255, 0.03);
-      padding: $spacing-md;
-      border-radius: 8px;
-      margin-bottom: $spacing-md;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      
-      code {
-        font-family: $font-family-code;
-        color: $color-text-primary;
-        background: transparent !important;
-      }
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: $radius-md;
-      margin: $spacing-md 0;
-      display: inline-block;
-      background: transparent !important;
-      
-      &[valign="middle"], &[valign="bottom"] {
-        display: inline-block;
-        margin: 0 4px;
-        vertical-align: middle;
-      }
-    }
-
-    blockquote {
-      margin: $spacing-md 0;
-      padding: $spacing-md;
-      border-left: 4px solid $color-accent-primary;
-      background: rgba($color-accent-primary, 0.05);
-      border-radius: 0 8px 8px 0;
-      color: $color-text-secondary;
-      
-      p { margin: 0; }
-    }
-
-    table {
-      display: block;
-      width: fit-content;
-      overflow-x: auto;
-      max-width: 100%;
-      margin-bottom: $spacing-md;
-      border-collapse: separate;
-      border-spacing: 0;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid $color-border !important;
-      background: transparent !important;
-      
-      tr { background-color: transparent !important; }
-      tr:nth-child(2n) { background-color: rgba(0, 0, 0, 0.02) !important; }
-      
-      th, td {
-        padding: $spacing-sm $spacing-md;
-        border-right: 1px solid $color-border !important;
-        border-bottom: 1px solid $color-border !important;
-        border-left: none !important;
-        border-top: none !important;
-        min-width: 6.25rem;
-        color: $color-text-primary;
-        background-color: transparent !important;
-        vertical-align: top;
-        
-        &:last-child { border-right: none !important; }
-      }
-
-      tr:last-child td { border-bottom: none !important; }
-
-      th {
-        background: rgba(0, 0, 0, 0.04) !important;
-        font-weight: 600;
-        text-align: left;
-      }
-    }
-  }
+  // Use shared markdown styles
+  @include markdown-styles;
 }
 
 /* Modal Styles */

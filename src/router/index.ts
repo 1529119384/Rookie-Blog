@@ -34,6 +34,26 @@ const router = createRouter({
       path: '/email/verify',
       name: 'email-verify',
       component: () => import('../views/EmailVerification.vue')
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/AboutView.vue')
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/PrivacyPolicy.vue')
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/TermsOfService.vue')
+    },
+    {
+      path: '/security',
+      name: 'security',
+      component: () => import('../views/SecurityPolicy.vue')
     }
   ],
   scrollBehavior(_to, _from, savedPosition) {

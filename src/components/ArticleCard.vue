@@ -18,14 +18,13 @@ const { t, d } = useI18n();
     <div class="card">
       <div class="card__image-wrapper">
         <img 
-          v-if="image" 
-          :src="image" 
+          :src="image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1080&auto=format&fit=crop'" 
           loading="lazy" 
           class="card__image" 
           alt="Article thumbnail"
           decoding="async"
         />
-        <div v-else class="card__image-placeholder"></div>
+        <div class="card__overlay"></div>
       </div>
       <div class="card__content">
         <div class="card__meta">
@@ -59,14 +58,15 @@ const { t, d } = useI18n();
 .card-container {
   width: 100%;
   height: 100%;
-  min-height: 480px;
+  /* min-height removed to allow flex/grid control, but set a reasonable default for the card itself */
   position: relative;
   z-index: 1;
 }
 
 .card {
   width: 100%;
-  height: 100%;
+  height: 380px; /* Fixed height for consistency */
+  position: relative; /* For absolute positioning of content */
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
   border-radius: 16px;
@@ -74,39 +74,32 @@ const { t, d } = useI18n();
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
-  // backdrop-filter: blur(10px); // Removed for performance
 
   &:hover {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
     box-shadow: var(--color-card-hover-shadow);
-    border-color: rgba($color-accent-primary, 0.3);
+    border-color: rgba($color-accent-primary, 0.5);
 
     .card__image {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
 
     .card__title {
       color: $color-accent-primary;
     }
+    
+    .card__overlay {
+      opacity: 0.9; /* Darken slightly on hover */
+    }
   }
 
   &__image-wrapper {
-    height: 200px;
+    height: 100%; /* Full height */
     width: 100%;
-    position: relative;
-    overflow: hidden;
-    background: radial-gradient(circle at center, #1a1a2e 0%, #050505 100%);
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      inset-inline-start: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, transparent 0%, rgba(5, 5, 5, 0.8) 100%);
-      pointer-events: none;
-    }
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
   }
 
   &__image {
@@ -116,26 +109,41 @@ const { t, d } = useI18n();
     transition: transform 0.6s ease;
   }
 
-  &__image-placeholder {
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: var(--color-bg-secondary);
+    background: linear-gradient(
+      to bottom, 
+      transparent 0%, 
+      rgba(0, 0, 0, 0.2) 40%, 
+      rgba(0, 0, 0, 0.95) 100%
+    );
+    transition: opacity 0.3s ease;
+    opacity: 0.8;
   }
 
   &__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     padding: $spacing-lg;
-    flex: 1;
+    z-index: 1;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
   }
 
   &__meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: $spacing-md;
-    font-size: 0.8rem;
-    color: $color-text-secondary;
+    margin-bottom: $spacing-sm;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7); /* Always light */
     font-family: $font-family-code;
 
     .tags {
@@ -144,22 +152,23 @@ const { t, d } = useI18n();
     }
 
     .tag {
-      color: $color-accent-primary;
-      background: rgba($color-accent-primary, 0.1);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
       padding: 2px 8px;
       border-radius: 4px;
+      backdrop-filter: blur(4px);
     }
   }
 
   &__title {
-    font-size: 1.4rem;
-    margin-bottom: $spacing-sm;
-    color: $color-text-primary;
+    font-size: 1.3rem;
+    margin-bottom: $spacing-xs;
+    color: #ffffff; /* Always white */
     font-weight: 700;
     line-height: 1.3;
     transition: color 0.3s;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     
-    // Line clamping for predictable height
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -167,15 +176,13 @@ const { t, d } = useI18n();
   }
 
   &__summary {
-    font-size: 0.95rem;
-    color: $color-text-secondary;
-    line-height: 1.6;
-    margin-bottom: $spacing-lg;
-    flex: 1;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8); /* Light grey */
+    line-height: 1.5;
+    margin-bottom: $spacing-md;
     
-    // Line clamping for predictable height
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2; /* Limit to 2 lines to save space */
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -183,7 +190,7 @@ const { t, d } = useI18n();
   &__btn {
     align-self: flex-start;
     background: transparent;
-    color: $color-text-primary;
+    color: $color-accent-primary; /* Accent color for button */
     border: none;
     padding: 0;
     font-family: $font-family-code;
@@ -195,6 +202,7 @@ const { t, d } = useI18n();
     gap: 8px;
     transition: gap 0.3s;
     text-decoration: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 
     &::after {
       content: '→';

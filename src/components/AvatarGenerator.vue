@@ -66,6 +66,7 @@ const initials = computed(() => {
       viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
       class="avatar-svg"
+      shape-rendering="geometricPrecision"
     >
       <defs>
         <!-- 3. Tech Texture & Lighting -->
@@ -74,17 +75,9 @@ const initials = computed(() => {
           <stop offset="100%" :stop-color="selectedScheme.bgEnd" />
         </linearGradient>
 
-        <!-- Holographic Glitch Effect -->
-        <filter id="holo-glitch">
-          <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="1" result="noise"/>
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.2 0" in="noise" result="coloredNoise"/>
-          <feComposite operator="in" in="coloredNoise" in2="SourceGraphic" result="compositeNoise"/>
-          <feBlend mode="overlay" in="compositeNoise" in2="SourceGraphic"/>
-        </filter>
-
-        <!-- Inner Glow for Neon Text -->
-        <filter id="text-glow">
-          <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+        <!-- Inner Glow for Neon Text - Optimized -->
+        <filter id="text-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="0.5" result="coloredBlur"/>
           <feMerge>
             <feMergeNode in="coloredBlur"/>
             <feMergeNode in="SourceGraphic"/>
@@ -98,7 +91,7 @@ const initials = computed(() => {
         cy="50" 
         r="48" 
         :fill="`url(#tech-grad-${username})`" 
-        class="tech-bg"
+        stroke-width="0"
       />
 
       <!-- Tech Ring (Rotating) -->
@@ -177,11 +170,13 @@ const initials = computed(() => {
 .tech-ring-1 {
   transform-origin: 50% 50%;
   animation: rotate-cw 10s linear infinite;
+  will-change: transform;
 }
 
 .tech-ring-2 {
   transform-origin: 50% 50%;
   animation: rotate-ccw 15s linear infinite;
+  will-change: transform;
 }
 
 @keyframes rotate-cw {
@@ -198,6 +193,7 @@ const initials = computed(() => {
 .scanline {
   animation: scan 3s linear infinite;
   opacity: 0.5;
+  will-change: transform, opacity;
 }
 
 @keyframes scan {

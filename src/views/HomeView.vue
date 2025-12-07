@@ -15,8 +15,8 @@ const showContent = computed(() => !isLoading.value && !isFetching.value);
 
 const featuredArticle = ref({
   id: '1',
-  title: t('articles.1.title'),
-  summary: t('articles.1.summary'),
+  title: t('home.loadingTitle'),
+  summary: t('home.loadingSummary'),
   date: '2023-10-15',
   tags: ['Vue', 'Frontend'],
   image: ''

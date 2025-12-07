@@ -376,13 +376,13 @@ const handleNestedVote = (id: number, type: 'like' | 'dislike') => {
             <div class="reply-form" @click.stop>
               <textarea 
                 v-model="replyContent" 
-                placeholder="Add a reply..." 
+                :placeholder="t('articleDetail.addReply')" 
                 rows="2"
                 ref="replyInput"
               ></textarea>
               <div class="form-actions">
-                <button class="cancel-btn" @click="isReplying = false">Cancel</button>
-                <button class="submit-btn" @click="submitReply" :disabled="!replyContent.trim()">Post</button>
+                <button class="cancel-btn" @click="isReplying = false">{{ t('articleDetail.cancel') }}</button>
+                <button class="submit-btn" @click="submitReply" :disabled="!replyContent.trim()">{{ t('articleDetail.post') }}</button>
               </div>
             </div>
           </div>
@@ -399,7 +399,7 @@ const handleNestedVote = (id: number, type: 'like' | 'dislike') => {
           >
             <div class="replies-list">
               <div v-if="loadingReplies" class="loading-replies" style="padding: 10px; text-align: center; color: var(--color-text-secondary);">
-                 Loading replies...
+                 {{ t('articleDetail.loadingReplies') }}
               </div>
               <CommentItem 
                 v-else
@@ -427,7 +427,7 @@ const handleNestedVote = (id: number, type: 'like' | 'dislike') => {
             >
               <span class="line"></span>
               <span class="text">
-                <span v-if="loadingReplies">Loading...</span>
+                <span v-if="loadingReplies">{{ t('home.loadingTitle') }}</span>
                 <span v-else>
                   {{ showReplies ? t('common.collapse') : t('common.viewReplies', { count: comment.replyCount || flattenedReplies.length }) }}
                 </span>
@@ -453,8 +453,8 @@ const handleNestedVote = (id: number, type: 'like' | 'dislike') => {
             :style="{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }"
             @click.stop
           >
-            <button @click="handleMenuAction('copy')">Copy</button>
-            <button @click="handleMenuAction('report')" class="danger">Report</button>
+            <button @click="handleMenuAction('copy')">{{ t('articleDetail.copy') }}</button>
+            <button @click="handleMenuAction('report')" class="danger">{{ t('articleDetail.report') }}</button>
           </div>
         </div>
       </teleport>

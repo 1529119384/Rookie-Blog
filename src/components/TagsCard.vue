@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import HotTagIcon from './icons/HotTagIcon.vue';
+import TechIcon from './icons/TechIcon.vue';
 
 const { t } = useI18n();
 
@@ -37,7 +38,10 @@ const tags: Tag[] = [
     <div class="card-content">
       <div class="tags-list">
         <a v-for="tag in tags" :key="tag.name" href="#" class="tag-item">
-          <span class="tag-name">{{ tag.name }}</span>
+          <div class="tag-info">
+            <TechIcon :name="tag.name" :size="16" class="tag-icon" />
+            <span class="tag-name">{{ tag.name }}</span>
+          </div>
           <span class="tag-count">{{ tag.count }}</span>
         </a>
       </div>
@@ -92,6 +96,18 @@ const tags: Tag[] = [
   flex-direction: column;
 }
 
+.tag-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag-icon {
+  opacity: 0.8;
+  transition: opacity 0.3s;
+  flex-shrink: 0;
+}
+
 .tag-item {
   display: flex;
   justify-content: space-between;
@@ -129,6 +145,11 @@ const tags: Tag[] = [
     .tag-count {
       background: rgba($color-accent-primary, 0.1);
       color: $color-accent-primary;
+    }
+
+    .tag-icon {
+      opacity: 1;
+      transform: scale(1.1);
     }
   }
   

@@ -20,7 +20,7 @@ const glowUrl = computed(() => `url(#${glowId.value})`);
 </script>
 
 <template>
-  <svg :width="width" :height="height" viewBox="0 0 240 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Rookie Blog">
+  <svg :width="width" :height="height" viewBox="0 0 240 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Rookie Blog" shape-rendering="geometricPrecision">
     <defs>
       <linearGradient :id="gradientId" x1="0" y1="0" x2="240" y2="40" gradientUnits="userSpaceOnUse">
         <template v-if="variant === 'dark'">
@@ -36,13 +36,13 @@ const glowUrl = computed(() => `url(#${glowId.value})`);
         </template>
       </linearGradient>
       
-      <filter :id="glowId" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="2" result="blur" />
+      <filter :id="glowId" x="-10%" y="-10%" width="120%" height="120%" filterUnits="userSpaceOnUse">
+        <feGaussianBlur stdDeviation="1" result="blur" />
         <feComposite in="SourceGraphic" in2="blur" operator="over" />
       </filter>
     </defs>
 
-    <g class="logo-text">
+    <g class="logo-text" style="will-change: transform;">
       <!-- "Rookie" - Stylized with tech cuts -->
       <path d="M10 30V10H18C22 10 24 12 24 16C24 19 22.5 21 20 22L25 30H21L16.5 22H13V30H10Z" :fill="gradientUrl" />
       <path d="M28 20C28 14.5 32.5 10 38 10C43.5 10 48 14.5 48 20C48 25.5 43.5 30 38 30C32.5 30 28 25.5 28 20ZM31 20C31 23.8 34.2 27 38 27C41.8 27 45 23.8 45 20C45 16.2 41.8 13 38 13C34.2 13 31 16.2 31 20Z" :fill="gradientUrl" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MagneticButton from './MagneticButton.vue';
 import HandwrittenTitle from './HandwrittenTitle.vue';
@@ -10,6 +10,20 @@ const { t, locale } = useI18n();
 const typedText = ref("");
 const typingSpeed = 80;
 let timer: ReturnType<typeof setInterval> | null = null;
+const titleRef = ref<HTMLElement | null>(null);
+
+const handleScroll = () => {
+  if (!titleRef.value) return;
+  const scrollY = window.scrollY;
+  // Parallax effect: Move title down at 0.4x speed of scroll
+  // Fade out effect: Reduce opacity as user scrolls down
+  requestAnimationFrame(() => {
+    if (titleRef.value) {
+      titleRef.value.style.transform = `translateY(${scrollY * 0.4}px)`;
+      titleRef.value.style.opacity = `${1 - Math.min(scrollY / 500, 1)}`;
+    }
+  });
+};
 
 const typeText = () => {
   if (timer) clearInterval(timer);
@@ -34,6 +48,12 @@ watch(locale, () => {
 
 onMounted(() => {
   typeText();
+  window.addEventListener('scroll', handleScroll, { passive: true });
+});
+
+onUnmounted(() => {
+  if (timer) clearInterval(timer);
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
@@ -42,7 +62,9 @@ onMounted(() => {
     <div class="container hero__content">
       
       <h1 class="hero__title fade-in-up stagger-delay-2">
-        <HandwrittenTitle :locale="locale" />
+        <div ref="titleRef" style="will-change: transform, opacity;">
+          <HandwrittenTitle :locale="locale" />
+        </div>
       </h1>
       
 

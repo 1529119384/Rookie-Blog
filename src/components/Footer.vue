@@ -5,11 +5,23 @@ import IconButton from './IconButton.vue';
 
 const { t } = useI18n();
 
-const links = {
-  product: ['Features', 'Integrations', 'Pricing', 'Changelog', 'Docs'],
-  company: ['About Us', 'Careers', 'Blog', 'Contact', 'Partners'],
-  legal: ['Privacy', 'Terms', 'Security']
+const footerNav = {
+  resources: [
+    { key: 'footer.community', url: 'https://github.com/patton174/Rookie-Blog', external: true }, // Placeholder
+    { key: 'footer.helpCenter', url: '/about', external: false } // Placeholder to About
+  ],
+  legal: [
+    { label: 'Privacy', url: '/privacy', external: false },
+    { label: 'Terms', url: '/terms', external: false },
+    { label: 'Security', url: '/security', external: false }
+  ]
 };
+
+const socials = [
+  { name: 'GitHub', icon: 'GH', url: 'https://github.com/patton174/Rookie-Blog' },
+  { name: 'Twitter', icon: 'TW', url: 'https://twitter.com' },
+  { name: 'LinkedIn', icon: 'LI', url: 'https://linkedin.com' }
+];
 </script>
 
 <template>
@@ -29,38 +41,47 @@ const links = {
           
           <!-- Social Links -->
           <div class="footer__socials">
-            <IconButton size="sm" variant="ghost" aria-label="GitHub">
-              <template #icon>GH</template>
-            </IconButton>
-            <IconButton size="sm" variant="ghost" aria-label="Twitter">
-              <template #icon>TW</template>
-            </IconButton>
-            <IconButton size="sm" variant="ghost" aria-label="LinkedIn">
-              <template #icon>LI</template>
-            </IconButton>
+            <a 
+              v-for="social in socials" 
+              :key="social.name" 
+              :href="social.url" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="social-btn"
+              :aria-label="social.name"
+            >
+              <IconButton size="sm" variant="ghost" as="span">
+                <template #icon>{{ social.icon }}</template>
+              </IconButton>
+            </a>
           </div>
         </div>
 
         <!-- Links Grid -->
         <div class="footer__nav-grid">
-          <div class="nav-col">
-            <h4 class="nav-title">{{ t('footer.product') }}</h4>
-            <ul>
-              <li v-for="link in links.product" :key="link"><a href="#" class="nav-link">{{ link }}</a></li>
-            </ul>
-          </div>
-          <div class="nav-col">
-            <h4 class="nav-title">{{ t('footer.company') }}</h4>
-            <ul>
-              <li v-for="link in links.company" :key="link"><a href="#" class="nav-link">{{ link }}</a></li>
-            </ul>
-          </div>
+          <!-- Removed unused columns as requested for blog project -->
+          
           <div class="nav-col">
             <h4 class="nav-title">{{ t('footer.resources') }}</h4>
             <ul>
-              <li><a href="#" class="nav-link">{{ t('footer.community') }}</a></li>
-              <li><a href="#" class="nav-link">{{ t('footer.helpCenter') }}</a></li>
-              <li><a href="#" class="nav-link">{{ t('footer.status') }}</a></li>
+              <li v-for="item in footerNav.resources" :key="item.key">
+                <a 
+                  v-if="item.external" 
+                  :href="item.url" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="nav-link"
+                >
+                  {{ t(item.key) }}
+                </a>
+                <router-link 
+                  v-else 
+                  :to="item.url" 
+                  class="nav-link"
+                >
+                  {{ t(item.key) }}
+                </router-link>
+              </li>
             </ul>
           </div>
         </div>
@@ -95,7 +116,17 @@ const links = {
         
         <div class="footer__utility">
           <div class="footer__links">
-            <a href="#" v-for="link in links.legal" :key="link">{{ link }}</a>
+            <template v-for="item in footerNav.legal" :key="item.label">
+              <a 
+                v-if="item.external" 
+                :href="item.url" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                {{ item.label }}
+              </a>
+              <router-link v-else :to="item.url">{{ item.label }}</router-link>
+            </template>
           </div>
           
           <!-- Language Switcher Placeholder (Removed as requested) -->
@@ -138,6 +169,14 @@ const links = {
     pointer-events: none;
     transition: background 0.3s;
     
+    // Disable heavy effects on mobile
+    @media (max-width: $breakpoint-mobile) {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background: var(--color-bg-primary); // Use variable for theme awareness
+      border-top: 1px solid var(--color-border);
+    }
+    
     &::before {
       content: '';
       position: absolute;
@@ -147,6 +186,11 @@ const links = {
       height: 80%;
       background: radial-gradient(circle, rgba($color-accent-primary, 0.05) 0%, transparent 70%);
       pointer-events: none;
+      
+      // Simplify gradient on mobile
+      @media (max-width: $breakpoint-mobile) {
+        display: none;
+      }
     }
   }
 
@@ -186,15 +230,21 @@ const links = {
   &__socials {
     display: flex;
     gap: 12px;
+    
+    .social-btn {
+      text-decoration: none;
+      color: inherit;
+      display: inline-flex;
+    }
   }
 
   &__nav-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    justify-content: flex-end;
     gap: 30px;
 
     @media (max-width: $breakpoint-mobile) {
-      grid-template-columns: repeat(2, 1fr);
+      justify-content: flex-start;
     }
   }
 

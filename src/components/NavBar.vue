@@ -24,13 +24,20 @@ const navigateToEditor = () => {
 };
 // const { theme } = useTheme(); // toggleTheme removed
 
-const menuItems = computed(() => [
-  { name: t('nav.java'), link: '#' },
-  { name: t('nav.spring'), link: '#' },
-  { name: t('nav.frameworks'), link: '#' },
-  { name: t('nav.devops'), link: '#' },
-  { name: t('nav.profile'), link: '/profile' }, // Temporary link for testing
-]);
+const menuItems = computed(() => {
+  const items = [
+    { name: t('nav.home'), link: '/' },
+    { name: t('nav.articles'), link: '/search' },
+    { name: t('nav.about'), link: '/about' },
+  ];
+
+  if (isLoggedIn.value) {
+    items.push({ name: t('nav.editor'), link: '/editor' });
+    items.push({ name: t('nav.profile'), link: '/profile' });
+  }
+
+  return items;
+});
 
 const isMenuOpen = ref(false);
 const isAuthModalOpen = ref(false);
@@ -91,8 +98,17 @@ const toggleSearch = async () => {
     }
   } else {
     isSearchExpanded.value = true;
-    await nextTick();
-    searchInputRef.value?.focus();
+    
+    // On mobile, delay focus to avoid lag during animation
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      setTimeout(() => {
+        searchInputRef.value?.focus();
+      }, 350); // Wait for transition (300ms) to complete
+    } else {
+      await nextTick();
+      searchInputRef.value?.focus();
+    }
   }
 };
 
@@ -190,23 +206,7 @@ const handleKeydown = (e: KeyboardEvent) => {
           </IconButton>
         </div>
 
-        <IconButton 
-          v-if="isLoggedIn"
-          class="write-btn"
-          :class="{ 'nav-item-hidden': isSearchExpanded }"
-          :aria-hidden="isSearchExpanded ? 'true' : 'false'"
-          size="md" 
-          variant="ghost" 
-          @click="navigateToEditor" 
-          title="Write Article"
-        >
-          <template #icon>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </template>
-        </IconButton>
+        <!-- Write Button Removed as per request (redundant with menu item) -->
 
         <IconButton 
           class="lang-btn"
@@ -237,7 +237,7 @@ const handleKeydown = (e: KeyboardEvent) => {
               <div class="profile-phantom" :class="{ 'lang-zh': locale === 'zh' }">
                 <div class="nav-avatar-wrapper">
                   <img v-if="user.avatarUrl" :src="user.avatarUrl" :alt="user.username" class="nav-avatar" />
-                  <AvatarGenerator v-else :username="user.username" :size="28" />
+                  <AvatarGenerator v-else :username="user.username" :size="22" />
                 </div>
                 <span class="nav-username">{{ user.username }}</span>
               </div>
@@ -251,23 +251,23 @@ const handleKeydown = (e: KeyboardEvent) => {
                 <div class="capsule-header">
                   <div class="nav-avatar-wrapper">
                     <img v-if="user.avatarUrl" :src="user.avatarUrl" :alt="user.username" class="nav-avatar" />
-                    <AvatarGenerator v-else :username="user.username" :size="28" />
+                    <AvatarGenerator v-else :username="user.username" :size="22" />
                   </div>
                   <span class="nav-username">{{ user.username }}</span>
                 </div>
                 
                 <div class="capsule-content">
                   <button class="dropdown-item" @click.stop="navigateToProfile">
-                    <IconUser :size="16" />
-                    {{ t('nav.profile', 'Profile') }}
+                    <IconUser :size="18" />
+                    <span>{{ t('nav.profile', 'Profile') }}</span>
                   </button>
                   <button class="dropdown-item danger" @click.stop="handleLogout">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    {{ t('nav.logout', 'Logout') }}
+                    <span>{{ t('nav.logout', 'Logout') }}</span>
                   </button>
                 </div>
               </div>
@@ -388,8 +388,8 @@ const handleKeydown = (e: KeyboardEvent) => {
   height: 36px;
   
   .nav-avatar-wrapper {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
   }
   
   .nav-username {
@@ -397,18 +397,13 @@ const handleKeydown = (e: KeyboardEvent) => {
     font-weight: 500;
     margin-right: 2px;
   }
-
-  &.lang-zh {
-    .nav-username {
-      font-size: 0.75rem;
-    }
-  }
 }
 
 .user-profile-capsule {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0; // Anchor to left so it expands to the right
+  right: auto;
   width: 100%; // Matches container initially
   min-width: 100%;
   height: 36px;
@@ -449,8 +444,8 @@ const handleKeydown = (e: KeyboardEvent) => {
     white-space: nowrap;
 
     .nav-avatar-wrapper {
-      width: 28px;
-      height: 28px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       overflow: hidden;
       display: flex;
@@ -489,7 +484,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   // Expanded State
   &.expanded {
     height: 140px; // Height enough for header + 2 buttons + padding
-    // width: 160px; // Removed horizontal expansion
+    min-width: 140px; // Ensure enough width for Chinese text
     border-radius: 16px; // Less rounded corners when expanded
     background: $color-card-bg;
     box-shadow: $shadow-card;
@@ -528,6 +523,7 @@ const handleKeydown = (e: KeyboardEvent) => {
     cursor: pointer;
     border-radius: 8px;
     transition: background 0.2s;
+    white-space: nowrap; // Prevent text wrapping
     
     // Initial state for stagger
     opacity: 0;
@@ -543,17 +539,6 @@ const handleKeydown = (e: KeyboardEvent) => {
       &:hover {
         background: rgba(239, 68, 68, 0.1);
       }
-    }
-  }
-
-  // Language adaptation
-  &.lang-zh {
-    .capsule-header .nav-username {
-      font-size: 0.75rem;
-    }
-    
-    .dropdown-item {
-      font-size: 0.8rem;
     }
   }
 
@@ -626,8 +611,7 @@ const handleKeydown = (e: KeyboardEvent) => {
     z-index: 1001; // Ensure controls are above mobile menu
     display: flex;
     align-items: center;
-    // Removed gap to control spacing manually with margins
-    // gap: $spacing-md; 
+    gap: 6px; // Standardized gap for consistent spacing
     
     @media (min-width: $breakpoint-tablet) {
       order: 2;
@@ -638,25 +622,11 @@ const handleKeydown = (e: KeyboardEvent) => {
       justify-content: flex-end; // Use flex-end to push items to the right, but we control width
       width: 20%; // Requirement: Max 20% width
       max-width: 20%;
-      gap: 0; // Requirement: Tight spacing
-      
-      // Reset margin logic for mobile flex layout
-      > *:not(:first-child) {
-        margin-left: 0; 
-      }
-    }
-
-    // Apply margin to all direct children except the first one
-    > *:not(:first-child) {
-      margin-left: $spacing-md;
-      transition: margin-left 350ms ease-in-out;
-      
-      @media (max-width: $breakpoint-tablet) {
-         margin-left: 4px; // Requirement: Reduced spacing
-      }
+      gap: 4px; // Requirement: Tight spacing
     }
   }
-    // Animation class for hiding elements when search is expanded
+
+  // Animation class for hiding elements when search is expanded
   .nav-item-hidden {
     opacity: 0;
     transform: translateX(20px) translateZ(0); // Slide to right with hardware acceleration
@@ -690,9 +660,11 @@ const handleKeydown = (e: KeyboardEvent) => {
     margin-left: 8px !important; // Tighter spacing (5-10px)
   }
 
-  .write-btn,
   .lang-btn,
   .theme-btn {
+      padding: 0 4px; // Match profile capsule left padding (4px)
+      min-width: auto; // Allow tighter fit
+
       // Desktop: Increase icon size to match visual weight of other icons
       :deep(.icon-btn__icon) {
         width: 28px;
@@ -720,19 +692,7 @@ const handleKeydown = (e: KeyboardEvent) => {
       }
     }
 
-  .search-button {
-    @media (max-width: $breakpoint-tablet) {
-      width: 36px; // Increased to match profile pill
-      height: 36px;
-      min-width: 36px;
-      padding: 0;
-      
-      :deep(.icon-btn__icon) {
-        width: 24px; // Increased icon size
-        height: 24px;
-      }
-    }
-  }
+
 
   .auth-container {
     display: block;
@@ -753,9 +713,9 @@ const handleKeydown = (e: KeyboardEvent) => {
       
       // Ensure size consistency
       :deep(.icon-btn) {
-        width: 32px; // Reduced
-        height: 32px;
-        min-width: 32px;
+        width: 36px; // Match other buttons on mobile
+        height: 36px;
+        min-width: 36px;
         padding: 0;
       }
       
@@ -764,8 +724,8 @@ const handleKeydown = (e: KeyboardEvent) => {
       }
       
       :deep(.icon-btn__icon) {
-        width: 18px; // Reduced
-        height: 18px;
+        width: 24px; // Consistent size
+        height: 24px;
       }
     }
   }
@@ -1041,16 +1001,41 @@ const handleKeydown = (e: KeyboardEvent) => {
   display: flex;
   align-items: center;
   position: relative;
-  transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275); // Ease-in-out with subtle bounce (elasticity)
-
+  // transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275); // Removed 'all'
+  // Only animate transform/opacity if needed, or layout specific props carefully
+  
   &--expanded {
-    margin-right: -5px; // Adjust gap to align closer to toggle (gap is 16px, we want 5-10px)
+    margin-right: -5px; 
     
     .search-input {
       width: 300px;
       opacity: 1;
       padding: 8px 12px;
       margin-right: 8px;
+    }
+  }
+
+  .search-button {
+    padding: 4px 4px; // Match profile capsule left padding (4px)
+    min-width: auto; // Allow tighter fit
+
+    // Desktop: Adjust icon size for visual balance
+    // Reduced to 20px to match the visual weight of the text-based language icon and avatar
+    :deep(.icon-btn__icon) {
+      width: 22px;
+      height: 22px;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      width: 36px; // Increased to match profile pill
+      height: 36px;
+      min-width: 36px;
+      padding: 0;
+      
+      :deep(.icon-btn__icon) {
+        width: 24px; // Increased icon size
+        height: 24px;
+      }
     }
   }
 }
@@ -1063,6 +1048,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   color: $color-text-primary;
   border-radius: $radius-md;
   transition: width 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 200ms ease;
+  will-change: width, opacity; // Optimization
   outline: none;
   padding: 0;
   
@@ -1079,11 +1065,33 @@ const handleKeydown = (e: KeyboardEvent) => {
 // Mobile adaptation
 @media (max-width: $breakpoint-mobile) {
   .search-container--expanded {
-    margin-right: -8px; // Tighter gap on mobile to ensure 5-10px visual spacing from toggle
+    margin-right: 0; // Reset margin
+    position: absolute; // Take out of flow to avoid layout thrashing
+    right: 50px; // Position left of buttons
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
     
     .search-input {
-      width: 180px; // Smaller width for mobile
+      width: calc(100vw - 140px); // Fixed width relative to viewport
+      max-width: 240px;
+      background: var(--color-bg-primary); // Use theme var
+      border: 1px solid var(--color-border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: none; // Disable transition on mobile for width/opacity to prevent layout thrashing
+      animation: mobileSearchReveal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+  }
+}
+
+@keyframes mobileSearchReveal {
+  from {
+    transform: scaleX(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
   }
 }
 

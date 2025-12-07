@@ -6,6 +6,7 @@
     viewBox="0 0 24 24" 
     fill="none"
     class="tech-search-icon"
+    shape-rendering="geometricPrecision"
   >
     <defs>
       <!-- Tech Gradient: Cyan to Blue -->
@@ -14,9 +15,9 @@
         <stop offset="100%" stop-color="#3b82f6" />
       </linearGradient>
       
-      <!-- Glow Filter -->
-      <filter id="search-glow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <!-- Glow Filter - Optimized -->
+      <filter id="search-glow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+        <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
         <feMerge>
           <feMergeNode in="coloredBlur"/>
           <feMergeNode in="SourceGraphic"/>
@@ -25,7 +26,7 @@
     </defs>
     
     <!-- Lens Group -->
-    <g class="lens-group">
+    <g class="lens-group" style="will-change: transform;">
       <!-- Main Ring -->
       <circle 
         cx="11" cy="11" r="7" 
@@ -53,6 +54,7 @@
       stroke-width="2.5" 
       stroke-linecap="round" 
       class="handle"
+      style="will-change: transform;"
     />
   </svg>
 </template>

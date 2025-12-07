@@ -162,6 +162,7 @@ onMounted(() => {
 <template>
   <div class="search-page">
     <div class="search-container">
+      <!-- Search Header -->
       <div class="search-header">
         <div class="search-box-wrapper">
           <div class="search-box">
@@ -197,91 +198,105 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="search-content">
-        <transition name="fade" mode="out-in">
-          <div v-if="!searchQuery" class="search-suggestions">
-            <div class="suggestion-section" v-if="searchHistory.length">
-              <div class="section-header">
-                <h3>History</h3>
-                <button @click="clearHistory" class="clear-btn" aria-label="Clear History">Clear</button>
-              </div>
-              <div class="tags-cloud">
-                <button 
-                  v-for="item in searchHistory" 
-                  :key="item" 
-                  class="tag history-tag"
-                  @click="selectTag(item)"
-                >
-                  {{ item }}
-                </button>
-              </div>
-            </div>
-
-            <div class="suggestion-section">
-              <div class="section-header">
-                <h3>Hot Searches</h3>
-              </div>
-              <div class="tags-cloud">
-                <button 
-                  v-for="item in hotSearches" 
-                  :key="item" 
-                  class="tag hot-tag"
-                  @click="selectTag(item)"
-                >
-                  <span class="fire-icon">🔥</span> {{ item }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div v-else class="search-results-container">
-            <div v-if="isLoading" class="loading-state">
-              <div class="spinner"></div>
-              <p>Searching the cosmos...</p>
-            </div>
-
-            <div v-else class="results-wrapper">
-              <p class="results-count">Found {{ filteredResults.length }} results</p>
-              
-              <div class="results-grid" v-if="paginatedResults.length">
-                <ArticleCard 
-                  v-for="result in paginatedResults" 
-                  :key="result.id" 
-                  v-bind="result" 
-                />
-              </div>
-              
-              <div v-else class="no-results">
-                <div class="no-results-content">
-                  <IconSearch :size="48" class="no-results-icon" />
-                  <h3>No matches found</h3>
-                  <p>Try adjusting your search or filters to find what you're looking for.</p>
+      <!-- Main Content Layout (Left - Right) -->
+      <div class="search-layout">
+        
+        <!-- Left Column: Results or History -->
+        <div class="left-column">
+          <transition name="fade" mode="out-in">
+            <!-- Case 1: Search History (When no query) -->
+            <div v-if="!searchQuery" class="history-section-wrapper">
+               <div class="suggestion-section" v-if="searchHistory.length">
+                <div class="section-header">
+                  <h3>History</h3>
+                  <button @click="clearHistory" class="clear-btn" aria-label="Clear History">Clear</button>
+                </div>
+                <div class="tags-cloud">
+                  <button 
+                    v-for="item in searchHistory" 
+                    :key="item" 
+                    class="tag history-tag"
+                    @click="selectTag(item)"
+                  >
+                    <span class="history-icon">🕒</span> {{ item }}
+                  </button>
                 </div>
               </div>
-
-              <!-- Pagination Controls -->
-              <div class="pagination" v-if="totalPages > 1">
-                <button 
-                  class="page-btn" 
-                  :disabled="currentPage === 1" 
-                  @click="changePage(currentPage - 1)"
-                  aria-label="Previous Page"
-                >
-                  &lt;
-                </button>
-                <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
-                <button 
-                  class="page-btn" 
-                  :disabled="currentPage === totalPages" 
-                  @click="changePage(currentPage + 1)"
-                  aria-label="Next Page"
-                >
-                  &gt;
-                </button>
+              <div v-else class="empty-history">
+                 <p>Type something to start searching...</p>
               </div>
             </div>
+
+            <!-- Case 2: Search Results (When query exists) -->
+            <div v-else class="search-results-container">
+              <div v-if="isLoading" class="loading-state">
+                <div class="spinner"></div>
+                <p>Searching the cosmos...</p>
+              </div>
+
+              <div v-else class="results-wrapper">
+                <p class="results-count">Found {{ filteredResults.length }} results</p>
+                
+                <div class="results-grid" v-if="paginatedResults.length">
+                  <ArticleCard 
+                    v-for="result in paginatedResults" 
+                    :key="result.id" 
+                    v-bind="result" 
+                  />
+                </div>
+                
+                <div v-else class="no-results">
+                  <div class="no-results-content">
+                    <IconSearch :size="48" class="no-results-icon" />
+                    <h3>No matches found</h3>
+                    <p>Try adjusting your search or filters to find what you're looking for.</p>
+                  </div>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="pagination" v-if="totalPages > 1">
+                  <button 
+                    class="page-btn" 
+                    :disabled="currentPage === 1" 
+                    @click="changePage(currentPage - 1)"
+                    aria-label="Previous Page"
+                  >
+                    &lt;
+                  </button>
+                  <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+                  <button 
+                    class="page-btn" 
+                    :disabled="currentPage === totalPages" 
+                    @click="changePage(currentPage + 1)"
+                    aria-label="Next Page"
+                  >
+                    &gt;
+                  </button>
+                </div>
+              </div>
+            </div>
+          </transition>
+        </div>
+
+        <!-- Right Column: Hot Searches (Always Visible) -->
+        <div class="right-column">
+          <div class="suggestion-section sticky-sidebar">
+            <div class="section-header">
+              <h3>Hot Searches</h3>
+            </div>
+            <div class="tags-cloud">
+              <button 
+                v-for="item in hotSearches" 
+                :key="item" 
+                class="tag hot-tag"
+                @click="selectTag(item)"
+              >
+                <span class="fire-icon">🔥</span> {{ item }}
+              </button>
+            </div>
           </div>
-        </transition>
+        </div>
+
       </div>
     </div>
   </div>
@@ -295,7 +310,8 @@ onMounted(() => {
   padding-bottom: $spacing-xxl;
   min-height: 100vh;
   width: 100%;
-  background: radial-gradient(circle at 50% 0%, rgba($color-accent-primary, 0.05) 0%, transparent 50%);
+  // Use theme variable for background or keep transparent if body has bg
+  background: var(--color-bg-primary);
   
   @media (max-width: $breakpoint-mobile) {
     padding-top: 80px;
@@ -303,7 +319,7 @@ onMounted(() => {
 }
 
 .search-container {
-  max-width: 1000px;
+  max-width: 1200px; // Increased width for 2 columns
   margin: 0 auto;
   padding: 0 $spacing-lg;
 
@@ -313,7 +329,7 @@ onMounted(() => {
 }
 
 .search-header {
-  margin-bottom: $spacing-xxl;
+  margin-bottom: $spacing-xl;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -330,18 +346,17 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: $spacing-sm;
-    background: rgba(20, 20, 25, 0.6);
+    background: var(--color-bg-secondary); // Theme aware
     backdrop-filter: blur($backdrop-blur);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
     padding: 8px;
     border-radius: $radius-full;
     transition: $transition-base;
-    box-shadow: $shadow-lg;
+    box-shadow: $shadow-sm;
 
     &:focus-within {
-      border-color: rgba($color-accent-primary, 0.5);
-      box-shadow: 0 0 20px rgba($color-accent-primary, 0.2), $shadow-lg;
-      background: rgba(30, 30, 40, 0.8);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      background: var(--color-bg-primary);
     }
     
     .search-input {
@@ -349,14 +364,20 @@ onMounted(() => {
       background: transparent;
       border: none;
       padding: $spacing-sm $spacing-lg;
-      color: $color-text-primary;
+      color: var(--color-text-primary);
       font-size: 1.1rem;
       outline: none;
       min-width: 0;
       font-family: $font-family-main;
 
       &::placeholder {
-        color: rgba($color-text-secondary, 0.6);
+        color: var(--color-text-tertiary);
+      }
+
+      &:focus {
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
       }
     }
 
@@ -373,7 +394,7 @@ onMounted(() => {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba($color-accent-primary, 0.3);
+      box-shadow: 0 4px 12px rgba($color-accent-primary-rgb, 0.3);
 
       .btn-icon {
         display: none;
@@ -381,7 +402,7 @@ onMounted(() => {
 
       &:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba($color-accent-primary, 0.4);
+        box-shadow: 0 6px 16px rgba($color-accent-primary-rgb, 0.4);
       }
 
       &:active {
@@ -435,9 +456,9 @@ onMounted(() => {
     }
 
     .filter-chip {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: $color-text-secondary;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
       padding: 8px 20px;
       border-radius: $radius-full;
       cursor: pointer;
@@ -447,106 +468,145 @@ onMounted(() => {
       white-space: nowrap;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: $color-text-primary;
+        background: var(--color-bg-primary);
+        color: var(--color-text-primary);
+        border-color: var(--color-text-tertiary);
       }
 
       &.active {
-        background: rgba($color-accent-primary, 0.15);
-        border-color: $color-accent-primary;
-        color: $color-accent-primary;
-        box-shadow: 0 0 10px rgba($color-accent-primary, 0.2);
+        background: rgba($color-accent-primary-rgb, 0.1);
+        border-color: var(--color-accent-primary);
+        color: var(--color-accent-primary);
       }
     }
   }
 }
 
-.search-content {
-  min-height: 400px;
-}
-
-.search-suggestions {
-  max-width: 800px;
-  margin: 0 auto;
+// Layout Grid
+.search-layout {
   display: grid;
+  grid-template-columns: 1fr 300px;
   gap: $spacing-xl;
-  animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
 
-  .suggestion-section {
-    background: rgba(20, 20, 25, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: $radius-lg;
-    padding: $spacing-lg;
-    backdrop-filter: blur(10px);
+.left-column {
+  min-width: 0; // Fix grid overflow issues
+}
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: $spacing-md;
+.right-column {
+  @media (max-width: $breakpoint-desktop) {
+    // On mobile/tablet, move hot searches to top or bottom? 
+    // Usually sidebar goes to bottom, but for search page, maybe hot searches are important.
+    // Let's keep it order-last (default)
+    display: none; // Optional: Hide hot searches on mobile to reduce clutter? Or keep it.
+    // Let's show it but simplified
+    display: block;
+  }
+}
 
-      h3 {
-        font-size: 1.1rem;
-        color: $color-text-secondary;
-        font-weight: 500;
-      }
+.suggestion-section {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  backdrop-filter: blur(10px);
+  
+  &.sticky-sidebar {
+    position: sticky;
+    top: 100px; // Adjust based on navbar height
+  }
 
-      .clear-btn {
-        background: none;
-        border: none;
-        color: $color-text-secondary;
-        cursor: pointer;
-        font-size: 0.9rem;
-        opacity: 0.7;
-        transition: $transition-base;
-        
-        &:hover {
-          opacity: 1;
-          color: $color-accent-tertiary;
-        }
-      }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+
+    h3 {
+      font-size: 1.1rem;
+      color: var(--color-text-primary);
+      font-weight: 600;
     }
 
-    .tags-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: $spacing-sm;
-
-      .tag {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid transparent;
-        color: $color-text-primary;
-        padding: 8px 16px;
-        border-radius: $radius-md;
-        cursor: pointer;
-        transition: $transition-base;
-        font-size: 0.9rem;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.1);
-          transform: translateY(-2px);
-          border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        &.hot-tag {
-          background: rgba(255, 150, 50, 0.1);
-          color: #ffaa40;
-          border-color: rgba(255, 150, 50, 0.2);
-
-          &:hover {
-            background: rgba(255, 150, 50, 0.2);
-            box-shadow: 0 4px 12px rgba(255, 150, 50, 0.2);
-          }
-        }
+    .clear-btn {
+      background: none;
+      border: none;
+      color: var(--color-text-tertiary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: $transition-base;
+      
+      &:hover {
+        color: var(--color-accent-tertiary);
+        text-decoration: underline;
       }
     }
   }
+
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+
+    .tag {
+      background: var(--color-bg-secondary);
+      border: 1px solid transparent;
+      color: var(--color-text-secondary);
+      padding: 6px 14px;
+      border-radius: $radius-md;
+      cursor: pointer;
+      transition: $transition-base;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &:hover {
+        background: var(--color-bg-primary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+        transform: translateY(-1px);
+      }
+
+      &.hot-tag {
+        // Keep hot tags distinctive but theme aware?
+        // Maybe just use accent color
+        background: rgba($color-accent-secondary-rgb, 0.05);
+        color: var(--color-accent-secondary);
+        border-color: rgba($color-accent-secondary-rgb, 0.1);
+
+        &:hover {
+          background: rgba($color-accent-secondary-rgb, 0.1);
+          box-shadow: 0 2px 8px rgba($color-accent-secondary-rgb, 0.15);
+        }
+      }
+      
+      &.history-tag {
+         // Subtle styling for history
+         .history-icon {
+            font-size: 0.8em;
+            opacity: 0.7;
+         }
+      }
+    }
+  }
+}
+
+.empty-history {
+    text-align: center;
+    padding: $spacing-xl;
+    color: var(--color-text-tertiary);
 }
 
 .results-wrapper {
   .results-count {
     margin-bottom: $spacing-lg;
-    color: $color-text-secondary;
+    color: var(--color-text-secondary);
     font-family: $font-family-code;
     font-size: 0.9rem;
   }
@@ -566,18 +626,18 @@ onMounted(() => {
 
   .no-results-content {
     text-align: center;
-    color: $color-text-secondary;
+    color: var(--color-text-secondary);
     max-width: 400px;
 
     .no-results-icon {
       margin-bottom: $spacing-lg;
       opacity: 0.5;
-      color: $color-text-secondary;
+      color: var(--color-text-tertiary);
     }
 
     h3 {
       font-size: 1.5rem;
-      color: $color-text-primary;
+      color: var(--color-text-primary);
       margin-bottom: $spacing-sm;
     }
 
@@ -594,16 +654,16 @@ onMounted(() => {
   justify-content: center;
   padding: $spacing-xxl;
   gap: $spacing-lg;
-  color: $color-text-secondary;
+  color: var(--color-text-secondary);
 
   .spinner {
     width: 48px;
     height: 48px;
-    border: 3px solid rgba($color-accent-primary, 0.1);
+    border: 3px solid rgba($color-accent-primary-rgb, 0.1);
     border-radius: 50%;
-    border-top-color: $color-accent-primary;
+    border-top-color: var(--color-accent-primary);
     animation: spin 1s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
-    box-shadow: 0 0 20px rgba($color-accent-primary, 0.2);
+    box-shadow: 0 0 20px rgba($color-accent-primary-rgb, 0.2);
   }
 }
 
@@ -613,12 +673,12 @@ onMounted(() => {
   align-items: center;
   gap: $spacing-lg;
   padding-top: $spacing-xl;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--color-border);
 
   .page-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: $color-text-primary;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
     width: 40px;
     height: 40px;
     border-radius: $radius-full;
@@ -630,19 +690,20 @@ onMounted(() => {
     font-weight: bold;
 
     &:hover:not(:disabled) {
-      background: rgba($color-accent-primary, 0.2);
-      border-color: $color-accent-primary;
-      color: $color-accent-primary;
+      background: rgba($color-accent-primary-rgb, 0.1);
+      border-color: var(--color-accent-primary);
+      color: var(--color-accent-primary);
     }
 
     &:disabled {
       opacity: 0.3;
       cursor: not-allowed;
+      background: transparent;
     }
   }
 
   .page-info {
-    color: $color-text-secondary;
+    color: var(--color-text-secondary);
     font-family: $font-family-code;
     font-size: 0.9rem;
   }
