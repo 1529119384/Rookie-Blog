@@ -5,7 +5,7 @@ import com.lx.blog.common.model.PageDomain;
 import com.lx.blog.common.model.TableSupport;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 分页工具类
  */

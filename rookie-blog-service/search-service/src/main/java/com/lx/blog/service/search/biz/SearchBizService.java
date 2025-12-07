@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 搜索业务服务接口（Elasticsearch）
  */

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 权限数据访问实现
  */
@@ -19,6 +19,7 @@ public class PermissionDaoImpl extends ServiceImpl<PermissionMapper, Permission>
 
     /**
      * 根据权限编码查询权限
+     *
      * @param code 权限唯一编码
      * @return 匹配的权限实体，未找到返回 null
      */
@@ -29,6 +30,7 @@ public class PermissionDaoImpl extends ServiceImpl<PermissionMapper, Permission>
 
     /**
      * 查询全部权限
+     *
      * @return 权限列表
      */
     @Override

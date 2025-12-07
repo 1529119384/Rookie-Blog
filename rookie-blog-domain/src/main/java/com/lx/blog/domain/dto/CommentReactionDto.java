@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/6
  * @description 评论点赞或踩DTO
  */

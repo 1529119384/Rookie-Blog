@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description Sa-Token 权限角色接口实现类
  */
@@ -23,13 +23,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SaPermissionRoleImpl implements StpInterface {
 
-    @NotNull
-    private final UserDao userDao;
-    @NotNull
-    private final RedisUtils redisUtils;
+    @NotNull private final UserDao userDao;
+    @NotNull private final RedisUtils redisUtils;
 
     /**
      * 获取指定登录账号的权限列表
+     *
      * @param loginId 登录账号ID
      * @param loginType 登录类型
      * @return 权限列表
@@ -49,6 +48,7 @@ public class SaPermissionRoleImpl implements StpInterface {
 
     /**
      * 获取指定登录账号的角色列表
+     *
      * @param loginId 登录账号ID
      * @param loginType 登录类型
      * @return 角色列表

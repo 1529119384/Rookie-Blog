@@ -17,8 +17,10 @@ import java.time.LocalDateTime;
  */
 @Repository
 public class UserSettingDaoImpl extends ServiceImpl<UserSettingMapper, UserSetting> implements UserSettingDao {
+
     /**
      * 根据用户ID查询设置
+     *
      * @param userId 用户ID
      * @return 用户设置，可为空
      */
@@ -29,6 +31,7 @@ public class UserSettingDaoImpl extends ServiceImpl<UserSettingMapper, UserSetti
 
     /**
      * 按用户ID写入或更新设置（幂等）
+     *
      * @param setting 用户设置实体
      */
     @Override

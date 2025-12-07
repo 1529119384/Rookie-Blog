@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 评论反应数据访问接口
  */

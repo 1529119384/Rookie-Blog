@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章业务服务实现类
  */
@@ -274,7 +274,9 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
     /**
      * 解析并保存章节目录
-     * 简单实现：提取 Markdown 中的 h1-h6 标题
+     *
+     * @param articleId 文章ID
+     * @param content 文章内容（Markdown格式）
      */
     private void parseAndSaveChapters(String articleId, String content) {
         // 1. 清理旧章节

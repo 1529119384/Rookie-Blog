@@ -6,8 +6,9 @@ import com.lx.blog.repository.dao.impl.mapper.UserPermissionMapper;
 import com.lx.blog.repository.dao.impl.mapper.PermissionMapper;
 import com.lx.blog.repository.dao.impl.mapper.entity.UserPermission;
 import com.lx.blog.repository.dao.impl.mapper.entity.Permission;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -15,18 +16,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 用户权限映射器实现类
  */
 @Repository
+@RequiredArgsConstructor
 public class UserPermissionDaoImpl extends ServiceImpl<UserPermissionMapper, UserPermission> implements UserPermissionDao {
 
-    @Autowired
-    private PermissionMapper permissionMapper;
+    @NotNull private final PermissionMapper permissionMapper;
 
     /**
      * 赋予用户权限（grant 并幂等）
+     *
      * @param userId 用户ID
      * @param permissionId 权限ID
      */
@@ -48,6 +50,7 @@ public class UserPermissionDaoImpl extends ServiceImpl<UserPermissionMapper, Use
 
     /**
      * 拒绝用户权限（deny 并幂等）
+     *
      * @param userId 用户ID
      * @param permissionId 权限ID
      */
@@ -68,6 +71,7 @@ public class UserPermissionDaoImpl extends ServiceImpl<UserPermissionMapper, Use
 
     /**
      * 撤销用户直授权限
+     *
      * @param userId 用户ID
      * @param permissionId 权限ID
      */
@@ -78,6 +82,7 @@ public class UserPermissionDaoImpl extends ServiceImpl<UserPermissionMapper, Use
 
     /**
      * 查询用户直授的权限列表
+     *
      * @param userId 用户ID
      * @return 权限实体列表
      */

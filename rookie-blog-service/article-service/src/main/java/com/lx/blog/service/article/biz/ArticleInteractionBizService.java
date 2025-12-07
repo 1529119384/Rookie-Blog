@@ -4,7 +4,7 @@ import com.lx.blog.common.response.Result;
 import com.lx.blog.domain.dto.ArticleViewDto;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章互动业务服务接口
  */

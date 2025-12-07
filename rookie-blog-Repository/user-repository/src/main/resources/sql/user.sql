@@ -93,16 +93,18 @@ CREATE TABLE `user_permission` (
   CONSTRAINT `fk_user_perm_perm` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `login_logs` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user_log` (
+  `id` VARCHAR(32) NOT NULL,
+  `_class` VARCHAR(255) DEFAULT NULL,
   `user_id` CHAR(32) DEFAULT NULL,
+  `action` VARCHAR(64) DEFAULT NULL,
   `ip` VARCHAR(45) DEFAULT NULL,
   `user_agent` VARCHAR(255) DEFAULT NULL,
   `logged_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `idx_login_logs_user` (`user_id`),
-  KEY `idx_login_logs_time` (`logged_at`),
-  CONSTRAINT `fk_login_logs_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  KEY `idx_user_log_user` (`user_id`),
+  KEY `idx_user_log_time` (`logged_at`),
+  CONSTRAINT `fk_user_log_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `user_setting` (

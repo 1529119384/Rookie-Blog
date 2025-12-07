@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章评论控制器
  */
@@ -71,6 +71,7 @@ public class ArticleCommentController {
      * @return 结果
      */
     @PostMapping("/add")
+    @OpLog(action = "add", func = "article.comment")
     @Operation(summary = "发表评论", description = "在文章下发表评论")
     public Result<Object> addComment(@RequestBody @Valid CommentSaveDto dto) {
         return biz.addComment(dto);
@@ -83,6 +84,7 @@ public class ArticleCommentController {
      * @return 结果
      */
     @PostMapping("/reply")
+    @OpLog(action = "reply", func = "article.comment")
     @Operation(summary = "回复评论", description = "回复楼主或某条回复")
     public Result<Object> addReply(@RequestBody @Valid CommentReplySaveDto dto) {
         return biz.addReply(dto);
@@ -95,6 +97,7 @@ public class ArticleCommentController {
      * @return 结果
      */
     @PostMapping("/reaction")
+    @OpLog(action = "react", func = "article.comment")
     @Operation(summary = "评论点赞或踩", description = "对评论或回复进行点赞或踩")
     public Result<Object> react(@RequestBody @Valid CommentReactionDto dto) {
         return biz.react(dto);

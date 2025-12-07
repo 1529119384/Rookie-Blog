@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/04
  * @description 评论列表响应DTO
  */

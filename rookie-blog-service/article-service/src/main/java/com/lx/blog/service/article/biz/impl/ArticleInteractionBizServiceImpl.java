@@ -7,8 +7,8 @@ import com.lx.blog.domain.dto.ArticleViewDto;
 import com.lx.blog.repository.dao.ArticleFavoriteDao;
 import com.lx.blog.repository.dao.ArticleLikeDao;
 import com.lx.blog.repository.dao.ArticleStatsDao;
-import com.lx.blog.repository.dao.ArticleViewDao;
-import com.lx.blog.repository.dao.impl.mapper.entity.ArticleView;
+import com.lx.blog.repository.dao.ArticleLogDao;
+import com.lx.blog.repository.dao.impl.mapper.entity.ArticleLog;
 import com.lx.blog.service.article.biz.ArticleInteractionBizService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章互动业务服务实现类
  */
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ArticleInteractionBizServiceImpl implements ArticleInteractionBizService {
 
-    @NotNull private final ArticleViewDao viewDao;
+    @NotNull private final ArticleLogDao viewDao;
     @NotNull private final ArticleStatsDao statsDao;
     @NotNull private final ArticleLikeDao likeDao;
     @NotNull private final ArticleFavoriteDao favoriteDao;
@@ -38,7 +38,7 @@ public class ArticleInteractionBizServiceImpl implements ArticleInteractionBizSe
      */
     @Override
     public Result<Object> appendView(ArticleViewDto dto) {
-        ArticleView view = BeanCopyUtils.copyProperties(dto, ArticleView.class);
+        ArticleLog view = BeanCopyUtils.copyProperties(dto, ArticleLog.class);
         view.setViewAt(LocalDateTime.now());
         viewDao.appendView(view);
         statsDao.incViews(view.getArticleId(), 1);

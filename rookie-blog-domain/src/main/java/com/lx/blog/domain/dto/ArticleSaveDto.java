@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/04
  * @description 文章保存/发布请求参数
  */

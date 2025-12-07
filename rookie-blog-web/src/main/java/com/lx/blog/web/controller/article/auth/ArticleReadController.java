@@ -1,5 +1,6 @@
 package com.lx.blog.web.controller.article.auth;
 
+import com.lx.blog.common.aop.log.OpLog;
 import com.lx.blog.common.response.Result;
 import com.lx.blog.domain.vo.ArticleChapterVo;
 import com.lx.blog.domain.vo.ArticleContentVo;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章阅读查询控制器
  */
@@ -34,6 +35,7 @@ public class ArticleReadController {
      * @return 文章信息
      */
     @GetMapping("/by-slug/{slug}")
+    @OpLog(action = "view", func = "article.view")
     @Operation(summary = "根据slug查询文章", description = "根据SEO别名查询文章基础信息")
     public Result<ArticleVo> getBySlug(@PathVariable("slug") String slug) {
         return biz.getBySlug(slug);

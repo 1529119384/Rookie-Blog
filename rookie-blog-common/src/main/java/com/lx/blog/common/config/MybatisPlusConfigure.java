@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description MybatisPlus配置类
  */

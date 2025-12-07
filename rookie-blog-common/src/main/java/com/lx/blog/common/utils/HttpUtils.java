@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description HTTP工具类
  */

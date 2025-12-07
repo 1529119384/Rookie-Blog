@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 全局异常捕获
  */

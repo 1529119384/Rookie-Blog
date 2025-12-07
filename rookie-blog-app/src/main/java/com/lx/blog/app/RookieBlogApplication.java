@@ -11,9 +11,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/12
- * @description
+ * @description 主应用类
  */
 @Slf4j
 @SpringBootApplication
@@ -37,6 +37,7 @@ public class RookieBlogApplication {
         }
         String serverPort = env.getProperty("server.port");
         String contextPath = env.getProperty("server.servlet.context-path");
+        String githubRepo = env.getProperty("project.github.repo");
 
         log.info("""
 		
@@ -54,7 +55,7 @@ public class RookieBlogApplication {
 		|   |.'                     '--'     |  ,   / \\   \\  /         |   | ,'   ---`-'           |   :    :\s
 		`---'                                 ---`-'   `----'          `----'                       \\   \\  / \s
 		                                                                                             `--`-'  \s
-		Rookie Blog                                                                                    v1.0.0
+		Rookie Blog v1.0.0                      项目仓库:{}
 		\r-----------------------------------------------------------------------------------------------------
 		Application '{}' is running Success!
 		接口文档访问地址:
@@ -62,6 +63,7 @@ public class RookieBlogApplication {
 		   在线访问地址:   http://{}:{}{}/doc
 		配置文件:   {}
 		-----------------------------------------------------------------------------------------------------""",
+                githubRepo,
                 property,
                 serverPort,
                 contextPath,

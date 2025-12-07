@@ -10,7 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Getter
+/**
+ * @author LX
+ * @date 2025/12/03
+ * @description IP地址解析接口
+ */
 @Slf4j
 @Component
 public class IpParseApi {

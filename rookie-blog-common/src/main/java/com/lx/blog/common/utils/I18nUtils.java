@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Locale;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/2
  * @description I18n工具类（静态方法）
  */

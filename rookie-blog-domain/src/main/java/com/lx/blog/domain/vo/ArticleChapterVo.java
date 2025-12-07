@@ -3,7 +3,7 @@ package com.lx.blog.domain.vo;
 import lombok.Data;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/05
  * @description 文章章节VO
  */

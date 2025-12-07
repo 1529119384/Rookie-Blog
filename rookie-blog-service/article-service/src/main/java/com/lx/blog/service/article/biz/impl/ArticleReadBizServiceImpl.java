@@ -11,7 +11,7 @@ import com.lx.blog.domain.vo.TagStatVo;
 import com.lx.blog.repository.dao.ArticleChapterDao;
 import com.lx.blog.repository.dao.ArticleContentDao;
 import com.lx.blog.repository.dao.ArticleDao;
-import com.lx.blog.repository.dao.ArticleViewDao;
+import com.lx.blog.repository.dao.ArticleLogDao;
 import com.lx.blog.repository.dao.TagDao;
 import com.lx.blog.repository.dao.impl.mapper.entity.Article;
 import com.lx.blog.repository.dao.impl.mapper.entity.ArticleChapter;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章阅读查询业务服务实现类
  */
@@ -39,7 +39,7 @@ public class ArticleReadBizServiceImpl implements ArticleReadBizService {
     @NotNull private final ArticleDao articleDao;
     @NotNull private final ArticleContentDao contentDao;
     @NotNull private final ArticleChapterDao chapterDao;
-    @NotNull private final ArticleViewDao viewDao;
+    @NotNull private final ArticleLogDao viewDao;
     @NotNull private final TagDao tagDao;
 
     /**

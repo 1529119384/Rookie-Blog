@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章互动控制器
  */
@@ -25,32 +25,13 @@ public class ArticleInteractionController {
     @NotNull private final ArticleInteractionBizService biz;
 
     /**
-     * 记录文章阅读
-     *
-     * @param articleId 文章ID
-     * @param request Http请求
-     * @return 是否成功
-     */
-    @PostMapping("/{articleId}/view")
-    @Operation(summary = "记录文章阅读", description = "记录阅读明细并增加阅读统计")
-    @OpLog(action = "view", func = "article.view")
-    public Result<Object> appendView(@PathVariable("articleId") String articleId, HttpServletRequest request) {
-        ArticleViewDto dto = ArticleViewDto.builder()
-                .articleId(articleId)
-                .ip(request.getRemoteAddr())
-                .ua(request.getHeader("User-Agent"))
-                .build();
-        return biz.appendView(dto);
-    }
-
-    /**
      * 点赞文章
      *
      * @param articleId 文章ID
      * @return 结果
      */
     @PostMapping("/{articleId}/like")
-    @Operation(summary = "点赞文章", description = "为文章点赞")
+    @Operation(summary = "点赞文章", description = "点赞文章")
     public Result<Object> like(@PathVariable("articleId") String articleId) {
         return biz.like(articleId);
     }
@@ -62,7 +43,7 @@ public class ArticleInteractionController {
      * @return 结果
      */
     @PostMapping("/{articleId}/unlike")
-    @Operation(summary = "取消点赞文章", description = "取消文章点赞")
+    @Operation(summary = "取消点赞文章", description = "取消点赞文章")
     public Result<Object> unlike(@PathVariable("articleId") String articleId) {
         return biz.unlike(articleId);
     }

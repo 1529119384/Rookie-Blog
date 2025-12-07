@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 评论反应数据访问实现
  */

@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description sa-token配置类
  */
@@ -19,9 +19,13 @@ public class SaTokenConfigure implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
-                .addPathPatterns("/user/**")
+                .addPathPatterns(
+                        "/user/**",
+                        "/article/**"
+                )
                 .excludePathPatterns(
-                        "/user/auth/**"
+                        "/user/auth/**",
+                        "article/read/**"
                 );
     }
 }

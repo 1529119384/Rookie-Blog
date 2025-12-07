@@ -3,7 +3,7 @@ package com.lx.blog.common.model;
 import lombok.Data;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 分页参数模型
  */

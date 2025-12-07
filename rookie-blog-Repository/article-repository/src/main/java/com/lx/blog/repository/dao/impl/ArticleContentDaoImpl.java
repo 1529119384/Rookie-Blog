@@ -7,7 +7,7 @@ import com.lx.blog.repository.dao.impl.mapper.entity.ArticleContent;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/04
  * @description 文章内容数据访问实现
  */

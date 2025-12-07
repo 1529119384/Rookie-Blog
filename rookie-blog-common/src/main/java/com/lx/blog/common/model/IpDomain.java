@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description IP地址实体类
  */

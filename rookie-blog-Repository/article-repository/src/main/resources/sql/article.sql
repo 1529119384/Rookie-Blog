@@ -171,19 +171,21 @@ CREATE TABLE IF NOT EXISTS article_favorite (
   CONSTRAINT fk_article_favorite_article FOREIGN KEY (article_id) REFERENCES article (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章收藏记录';
 
-CREATE TABLE IF NOT EXISTS article_view (
-  id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '阅读明细ID',
+CREATE TABLE IF NOT EXISTS article_log (
+  id              VARCHAR(32)     NOT NULL COMMENT '文章操作日志ID',
+  `_class`        VARCHAR(255)    NULL     COMMENT '事件类',
   article_id      CHAR(32)        NOT NULL COMMENT '文章ID',
   user_id         CHAR(32)        NULL     COMMENT '用户ID（匿名为NULL）',
+  action          VARCHAR(64)     NULL     COMMENT '动作',
   ip              VARCHAR(64)     NULL     COMMENT 'IP地址',
   ua              VARCHAR(512)    NULL     COMMENT 'User-Agent',
   referer         VARCHAR(512)    NULL     COMMENT '来源页面',
-  view_at         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '阅读时间',
+  view_at         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发生时间',
   PRIMARY KEY (id),
-  KEY idx_view_article_time (article_id, view_at),
-  KEY idx_view_user_article (user_id, article_id),
-  CONSTRAINT fk_article_view_article FOREIGN KEY (article_id) REFERENCES article (id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章阅读明细（可分区）';
+  KEY idx_article_log_article_time (article_id, view_at),
+  KEY idx_article_log_user_article (user_id, article_id),
+  CONSTRAINT fk_article_log_article FOREIGN KEY (article_id) REFERENCES article (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章操作日志（可分区）';
 
 -- =====================================================================
 -- Table: comment / comment_reply / comment_reaction

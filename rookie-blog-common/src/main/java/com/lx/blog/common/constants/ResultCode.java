@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.io.Serializable;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/12
  * @description 错误码枚举（支持国际化键）
  */

@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationEvent;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 操作日志事件
  */

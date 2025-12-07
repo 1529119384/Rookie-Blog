@@ -7,7 +7,7 @@ import com.lx.blog.repository.dao.impl.mapper.entity.Role;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 用户角色映射器接口
  */
@@ -15,6 +15,7 @@ public interface UserRoleDao extends IService<UserRole> {
 
     /**
      * 绑定角色到用户（幂等）
+     *
      * @param userId 用户ID
      * @param roleId 角色ID
      */
@@ -22,6 +23,7 @@ public interface UserRoleDao extends IService<UserRole> {
 
     /**
      * 解绑用户角色（幂等）
+     *
      * @param userId 用户ID
      * @param roleId 角色ID
      */
@@ -29,6 +31,7 @@ public interface UserRoleDao extends IService<UserRole> {
 
     /**
      * 查询用户的角色列表
+     *
      * @param userId 用户ID
      * @return 角色列表
      */

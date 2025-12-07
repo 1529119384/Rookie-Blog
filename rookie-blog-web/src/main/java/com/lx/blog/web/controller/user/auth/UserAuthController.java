@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 用户控制器
  *
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 用户控制器
  */
@@ -35,8 +35,8 @@ public class UserAuthController {
      * @return 登录结果
      */
     @PostMapping("/login")
-    @Operation(summary = "用户登录", description = "用户通过用户名和密码登录系统")
     @OpLog(action = "login", func = "user.auth.login")
+    @Operation(summary = "用户登录", description = "用户通过用户名和密码登录系统")
     public Result<SaTokenInfo> doLogin(@RequestBody LoginDto req) {
         return authBiz.login(req);
     }
@@ -48,6 +48,7 @@ public class UserAuthController {
       * @return 注册结果
       */
     @PostMapping("/register")
+    @OpLog(action = "register", func = "user.auth.register")
     @Operation(summary = "用户注册", description = "用户通过用户名、密码、邮箱注册系统")
     public Result<Object> doRegister(@RequestBody RegisterDto req) {
         return authBiz.register(req);
@@ -59,6 +60,7 @@ public class UserAuthController {
      * @return 注销结果
      */
     @PostMapping("/logout")
+    @OpLog(action = "logout", func = "user.auth.logout")
     @Operation(summary = "用户注销登录", description = "用户注销登录系统")
     public Result<Object> logout() {
         return authBiz.logout();
@@ -71,6 +73,7 @@ public class UserAuthController {
      * @return 更新结果
      */
     @PostMapping("/password/update")
+    @OpLog(action = "update_password", func = "user.auth.updatePassword")
     @Operation(summary = "更新用户密码", description = "用户通过旧密码更新为新密码")
     public Result<Object> updatePassword(@RequestBody UpdatePasswordDto req) {
         return authBiz.updatePassword(req);

@@ -2,9 +2,9 @@ package com.lx.blog.repository.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lx.blog.repository.dao.ArticleViewDao;
-import com.lx.blog.repository.dao.impl.mapper.ArticleViewMapper;
-import com.lx.blog.repository.dao.impl.mapper.entity.ArticleView;
+import com.lx.blog.repository.dao.ArticleLogDao;
+import com.lx.blog.repository.dao.impl.mapper.ArticleLogMapper;
+import com.lx.blog.repository.dao.impl.mapper.entity.ArticleLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章阅读明细数据访问实现
  */
 @Repository
 @RequiredArgsConstructor
-public class ArticleViewDaoImpl extends ServiceImpl<ArticleViewMapper, ArticleView> implements ArticleViewDao {
+public class ArticleLogDaoImpl extends ServiceImpl<ArticleLogMapper, ArticleLog> implements ArticleLogDao {
 
     /**
      * 追加文章阅读明细
@@ -26,7 +26,11 @@ public class ArticleViewDaoImpl extends ServiceImpl<ArticleViewMapper, ArticleVi
      * @param view 文章阅读明细
      */
     @Override
-    public void appendView(ArticleView view) {
+    public void appendView(ArticleLog view) {
+        if (view == null) return;
+        if (baseMapper.selectOne(new LambdaQueryWrapper<ArticleLog>()
+                .eq(ArticleLog::getUserId, view.getUserId())
+                .eq(ArticleLog::getArticleId, view.getArticleId())) != null) return;
         baseMapper.insert(view);
     }
 
@@ -37,14 +41,12 @@ public class ArticleViewDaoImpl extends ServiceImpl<ArticleViewMapper, ArticleVi
      */
     @Override
     public List<String> listHistoryArticleIds(String userId) {
-        // 简单实现：查询该用户所有的阅读记录，去重，按时间倒序
-        // 注意：数据量大时应优化，例如只查最近100条，或者使用DISTINCT查询
-        return baseMapper.selectList(new LambdaQueryWrapper<ArticleView>()
-                .select(ArticleView::getArticleId, ArticleView::getViewAt) // 优化查询字段
-                .eq(ArticleView::getUserId, userId)
-                .orderByDesc(ArticleView::getViewAt))
+        return baseMapper.selectList(new LambdaQueryWrapper<ArticleLog>()
+                .select(ArticleLog::getArticleId, ArticleLog::getViewAt) // 优化查询字段
+                .eq(ArticleLog::getUserId, userId)
+                .orderByDesc(ArticleLog::getViewAt))
                 .stream()
-                .map(ArticleView::getArticleId)
+                .map(ArticleLog::getArticleId)
                 .distinct() // 内存去重
                 .collect(Collectors.toList());
     }

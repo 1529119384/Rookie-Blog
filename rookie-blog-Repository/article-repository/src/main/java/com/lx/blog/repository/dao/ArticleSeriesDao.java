@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lx.blog.repository.dao.impl.mapper.entity.ArticleSeries;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章系列数据访问接口
  */

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 用户实体类
  */

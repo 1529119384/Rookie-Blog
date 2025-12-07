@@ -5,7 +5,7 @@ import com.lx.blog.repository.dao.impl.mapper.entity.ArticleSeries;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章系列映射器
  */

@@ -12,7 +12,7 @@ import org.thymeleaf.context.Context;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 邮件发送工具类，支持 Thymeleaf 模板渲染
  */

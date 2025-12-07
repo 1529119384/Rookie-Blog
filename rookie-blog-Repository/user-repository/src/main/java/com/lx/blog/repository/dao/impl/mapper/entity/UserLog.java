@@ -12,57 +12,53 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * @author 李旭
- * @date 2025/12/03
- * @description 文章阅读明细实体
+ * @author LX
+ * @date 2025/11/14
+ * @description 登录日志实体类
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("article_view")
-public class ArticleView {
+@TableName("user_log")
+public class UserLog {
+
+    @TableId(value = "id")
+    private String id;
 
     /**
-     * 阅读明细ID
+     * 方法类名称
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableField("_class")
+    private String _class;
 
     /**
-     * 文章ID
+     * 操作行为
      */
-    @TableField("article_id")
-    private String articleId;
+    @TableField("action")
+    private String action;
 
     /**
-     * 用户ID（匿名为NULL）
+     * 用户ID（UUID），可为空
      */
     @TableField("user_id")
     private String userId;
 
     /**
-     * IP地址
+     * 登录 IP
      */
     @TableField("ip")
     private String ip;
 
     /**
-     * User-Agent
+     * UA 标识
      */
-    @TableField("ua")
-    private String ua;
+    @TableField("user_agent")
+    private String userAgent;
 
     /**
-     * 来源页面
+     * 登录时间
      */
-    @TableField("referer")
-    private String referer;
-
-    /**
-     * 阅读时间
-     */
-    @TableField("view_at")
-    private LocalDateTime viewAt;
+    @TableField("logged_at")
+    private LocalDateTime loggedAt;
 }
-

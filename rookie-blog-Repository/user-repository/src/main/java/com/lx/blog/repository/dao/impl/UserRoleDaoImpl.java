@@ -6,8 +6,9 @@ import com.lx.blog.repository.dao.impl.mapper.UserRoleMapper;
 import com.lx.blog.repository.dao.impl.mapper.RoleMapper;
 import com.lx.blog.repository.dao.impl.mapper.entity.UserRole;
 import com.lx.blog.repository.dao.impl.mapper.entity.Role;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import java.time.LocalDateTime;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
  * @description 用户角色映射器实现类
  */
 @Repository
+@RequiredArgsConstructor
 public class UserRoleDaoImpl extends ServiceImpl<UserRoleMapper, UserRole> implements UserRoleDao {
 
-    @Autowired
-    private RoleMapper roleMapper;
+    @NotNull private final RoleMapper roleMapper;
 
     /**
      * 绑定角色到用户（幂等）
+     *
      * @param userId 用户ID
      * @param roleId 角色ID
      */
@@ -40,6 +42,7 @@ public class UserRoleDaoImpl extends ServiceImpl<UserRoleMapper, UserRole> imple
 
     /**
      * 解绑用户角色（幂等）
+     *
      * @param userId 用户ID
      * @param roleId 角色ID
      */
@@ -50,6 +53,7 @@ public class UserRoleDaoImpl extends ServiceImpl<UserRoleMapper, UserRole> imple
 
     /**
      * 查询用户的角色列表
+     *
      * @param userId 用户ID
      * @return 角色列表
      */

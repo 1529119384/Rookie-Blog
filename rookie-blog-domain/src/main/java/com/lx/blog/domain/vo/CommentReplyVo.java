@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/05
  * @description 评论回复响应VO
  */

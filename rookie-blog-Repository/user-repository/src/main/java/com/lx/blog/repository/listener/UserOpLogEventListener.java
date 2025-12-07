@@ -1,8 +1,9 @@
 package com.lx.blog.repository.listener;
 
 import com.lx.blog.common.aop.log.OpLogEvent;
-import com.lx.blog.repository.dao.impl.mapper.LoginLogMapper;
-import com.lx.blog.repository.dao.impl.mapper.entity.LoginLog;
+import com.lx.blog.common.utils.UUIDUtils;
+import com.lx.blog.repository.dao.UserLogDao;
+import com.lx.blog.repository.dao.impl.mapper.entity.UserLog;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -12,28 +13,31 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 操作日志事件监听器
  */
 @Component
 @RequiredArgsConstructor
-public class OpLogEventListener {
+public class UserOpLogEventListener {
 
-    @NotNull
-    private final LoginLogMapper loginLogMapper;
+    @NotNull private final UserLogDao userLogDao;
 
     @EventListener
     public void onOpLog(OpLogEvent event) {
-        if (!"login_logs".equals(event.getTableName())) return;
+        if (!"user_log".equals(event.getTableName())) return;
         Map<String, Object> p = event.getPayload();
-        LoginLog log = LoginLog.builder()
-                .userId((String) p.get("user_id"))
+        String _class = (String) p.get("_class");
+        UserLog log = UserLog.builder()
+                .id(UUIDUtils.signatureUuid(LocalDateTime.now(), _class))
+                ._class(_class)
+                .action((String) p.get("action"))
+                .userId((String) p.get("userId"))
                 .ip((String) p.get("ip"))
                 .userAgent((String) p.get("user_agent"))
                 .loggedAt((LocalDateTime) p.get("logged_at"))
                 .build();
-        loginLogMapper.insert(log);
+        userLogDao.save(log);
     }
 }
 

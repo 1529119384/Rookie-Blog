@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章管理控制器
  */
@@ -45,7 +45,7 @@ public class ArticleController {
      */
     @PostMapping("/publish")
     @Operation(summary = "发布文章", description = "发布文章")
-    @OpLog(action = "publish", func = "article.publish")
+    @OpLog(action = "publish_article", func = "article.publish")
     public Result<String> publish(@RequestBody ArticleSaveDto dto) {
         return biz.publish(dto);
     }
@@ -58,7 +58,6 @@ public class ArticleController {
      */
     @GetMapping("/{articleId}/check")
     @Operation(summary = "检查文章是否为当前用户", description = "根据ID检查文章是否为当前登录用户的文章")
-    @OpLog(action = "check_ownership", func = "article.check_ownership")
     public Result<Boolean> checkOwnership(@PathVariable("articleId") String articleId) {
         return biz.checkOwnership(articleId);
     }
@@ -71,7 +70,7 @@ public class ArticleController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除文章", description = "根据ID删除文章（软删除）")
-    @OpLog(action = "delete", func = "article.delete")
+    @OpLog(action = "delete_article", func = "article.delete")
     public Result<Boolean> delete(@PathVariable("id") String id) {
         return biz.delete(id);
     }

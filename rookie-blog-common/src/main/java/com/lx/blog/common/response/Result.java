@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 通用返回结果封装
  */

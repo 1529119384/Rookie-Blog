@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/3
  * @description 用户个人信息控制器
  */

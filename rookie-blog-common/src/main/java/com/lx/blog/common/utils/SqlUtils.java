@@ -4,7 +4,7 @@ import com.lx.blog.common.exception.BaseException;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description
  */

@@ -3,7 +3,7 @@ package com.lx.blog.common.aop.log;
 import java.lang.annotation.*;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 操作日志注解
  */

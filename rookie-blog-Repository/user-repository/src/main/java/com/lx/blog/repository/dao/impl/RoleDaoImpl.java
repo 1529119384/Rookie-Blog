@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 角色数据访问实现
  */
@@ -19,6 +19,7 @@ public class RoleDaoImpl extends ServiceImpl<RoleMapper, Role> implements RoleDa
 
     /**
      * 根据角色编码查询角色
+     *
      * @param code 角色唯一编码
      * @return 匹配的角色实体，未找到返回 null
      */
@@ -29,6 +30,7 @@ public class RoleDaoImpl extends ServiceImpl<RoleMapper, Role> implements RoleDa
 
     /**
      * 查询全部角色
+     *
      * @return 角色列表
      */
     @Override

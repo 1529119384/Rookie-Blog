@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/1
  * @description 更新密码请求参数
  */

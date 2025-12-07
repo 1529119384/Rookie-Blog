@@ -5,7 +5,7 @@ import com.lx.blog.repository.dao.impl.mapper.entity.RolePermission;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 角色权限Mapper接口
  */

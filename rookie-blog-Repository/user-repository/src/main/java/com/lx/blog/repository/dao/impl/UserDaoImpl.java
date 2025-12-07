@@ -27,7 +27,7 @@ import java.util.LinkedHashSet;
 import java.time.LocalDateTime;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/12
  * @description 用户映射器实现类
  */
@@ -35,16 +35,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UserDaoImpl extends ServiceImpl<UserMapper, User> implements UserDao {
 
-    @NotNull
-    private final UserRoleMapper userRoleMapper;
-    @NotNull
-    private final RoleMapper roleMapper;
-    @NotNull
-    private final RolePermissionMapper rolePermissionMapper;
-    @NotNull
-    private final UserPermissionMapper userPermissionMapper;
-    @NotNull
-    private final PermissionMapper permissionMapper;
+    @NotNull private final UserRoleMapper userRoleMapper;
+    @NotNull private final RoleMapper roleMapper;
+    @NotNull private final RolePermissionMapper rolePermissionMapper;
+    @NotNull private final UserPermissionMapper userPermissionMapper;
+    @NotNull private final PermissionMapper permissionMapper;
 
     /**
      * 根据用户名获取用户
@@ -81,6 +76,7 @@ public class UserDaoImpl extends ServiceImpl<UserMapper, User> implements UserDa
 
     /**
      * 根据邮箱获取用户信息
+     *
      * @param email 邮箱
      * @return 用户信息
      */
@@ -91,6 +87,7 @@ public class UserDaoImpl extends ServiceImpl<UserMapper, User> implements UserDa
 
     /**
      * 更新用户最后登录时间与IP
+     *
      * @param id 用户ID
      * @param ip 登录IP
      */
@@ -104,6 +101,7 @@ public class UserDaoImpl extends ServiceImpl<UserMapper, User> implements UserDa
 
     /**
      * 查询用户的角色列表
+     *
      * @param userId 用户ID
      * @return 角色列表
      */
@@ -117,6 +115,7 @@ public class UserDaoImpl extends ServiceImpl<UserMapper, User> implements UserDa
 
     /**
      * 查询用户的有效权限列表（合并角色继承与直授，剔除直拒）
+     *
      * @param userId 用户ID
      * @return 权限列表
      */

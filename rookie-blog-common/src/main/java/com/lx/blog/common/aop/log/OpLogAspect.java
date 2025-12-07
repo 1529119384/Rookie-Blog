@@ -3,6 +3,7 @@ package com.lx.blog.common.aop.log;
 import cn.dev33.satoken.stp.StpUtil;
 import com.lx.blog.common.utils.ServletUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 操作日志切面
  */
@@ -26,10 +27,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OpLogAspect {
 
-    private final OpLogRegistry registry;
-    private final ApplicationEventPublisher publisher;
+    @NotNull private final OpLogRegistry registry;
+    @NotNull private final ApplicationEventPublisher publisher;
 
-    @AfterReturning(pointcut = "@annotation(opLog)", returning = "ret")
+    @AfterReturning(pointcut = "@annotation(opLog)", returning = "ret", argNames = "jp,opLog,ret")
     public void afterSuccess(JoinPoint jp, OpLog opLog, Object ret) {
         MethodSignature ms = (MethodSignature) jp.getSignature();
         String className = ms.getDeclaringTypeName();
@@ -51,25 +52,20 @@ public class OpLogAspect {
         HttpServletRequest req = ServletUtils.getRequest();
         String ip = req.getRemoteAddr();
         String ua = req.getHeader("User-Agent");
+        String referer = req.getHeader("Referer");
+
         String userId = null;
         try { userId = StpUtil.getLoginIdAsString(); } catch (Exception ignored) {}
 
+        map.put("_class", opLog.func());
         map.put("action", opLog.action().isEmpty() ? jp.getSignature().getName() : opLog.action());
-        map.put("user_id", userId);
+        map.put("userId", userId);
         map.put("ip", ip);
         map.put("user_agent", ua);
+        map.put("referer", referer);
         map.put("logged_at", LocalDateTime.now());
-        // 尝试提取articleId
-        try {
-            MethodSignature ms = (MethodSignature) jp.getSignature();
-            String[] names = ms.getParameterNames();
-            Object[] args = jp.getArgs();
-            for (int i = 0; i < names.length; i++) {
-                if ("articleId".equals(names[i]) || ("id".equals(names[i]) && args[i] instanceof String)) {
-                    map.put("article_id", String.valueOf(args[i]));
-                }
-            }
-        } catch (Exception ignored) {}
+        map.put("params", ServletUtils.getParamsMap());
+        map.put("params_array", ServletUtils.getParamsArrayMap());
         return map;
     }
 }

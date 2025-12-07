@@ -1,5 +1,6 @@
 package com.lx.blog.service.email.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.lx.blog.common.utils.MailUtils;
 import com.lx.blog.service.email.EmailService;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 邮件服务实现
  */
@@ -25,7 +26,6 @@ public class EmailServiceImpl implements EmailService {
 
     /**
      * 发送邮箱验证邮件
-     * @param userId 用户ID
      * @param email 收件邮箱
      * @param verifyUrl 验证链接
      */

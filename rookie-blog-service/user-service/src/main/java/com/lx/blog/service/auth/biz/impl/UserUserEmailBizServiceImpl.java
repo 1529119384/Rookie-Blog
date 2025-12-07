@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/3
  * @description 邮箱业务服务实现类
  */

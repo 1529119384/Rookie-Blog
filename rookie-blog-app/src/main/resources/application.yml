@@ -5,3 +5,7 @@ spring:
 server:
   servlet:
     context-path: /api
+
+project:
+  github:
+    repo: https://github.com/patton174/Rookie-Blog/tree/backend

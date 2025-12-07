@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 搜索业务服务实现（Elasticsearch）
  */

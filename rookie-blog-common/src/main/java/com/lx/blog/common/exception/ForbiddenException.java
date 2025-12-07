@@ -3,7 +3,7 @@ package com.lx.blog.common.exception;
 import com.lx.blog.common.constants.ResultCode;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 禁止访问(未授权)异常
  */

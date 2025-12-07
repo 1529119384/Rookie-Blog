@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/05
  * @description 文章阅读记录DTO
  */

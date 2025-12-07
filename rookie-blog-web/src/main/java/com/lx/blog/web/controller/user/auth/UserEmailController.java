@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/3
  * @description 用户邮箱控制器
  */

@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author LX
+ * @date 2025/12/03
+ * @description OpenAPI配置类
+ */
 @Configuration
 public class OpenApiConfig {
 

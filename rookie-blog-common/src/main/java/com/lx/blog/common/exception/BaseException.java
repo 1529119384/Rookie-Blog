@@ -5,7 +5,7 @@ import com.lx.blog.common.utils.I18nUtils;
 import lombok.Getter;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 基础异常类
  */

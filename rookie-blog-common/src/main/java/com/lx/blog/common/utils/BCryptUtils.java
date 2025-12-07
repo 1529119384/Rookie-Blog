@@ -3,7 +3,7 @@ package com.lx.blog.common.utils;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/13
  * @description 加密工具类
  */

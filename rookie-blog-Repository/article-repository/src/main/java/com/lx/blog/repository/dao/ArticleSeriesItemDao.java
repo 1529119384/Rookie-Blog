@@ -6,7 +6,7 @@ import com.lx.blog.repository.dao.impl.mapper.entity.ArticleSeriesItem;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章系列项数据访问接口
  */

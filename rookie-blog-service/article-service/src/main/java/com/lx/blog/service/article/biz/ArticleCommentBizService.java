@@ -10,7 +10,7 @@ import com.lx.blog.domain.vo.CommentVo;
 import java.util.List;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/03
  * @description 文章评论业务服务接口
  */

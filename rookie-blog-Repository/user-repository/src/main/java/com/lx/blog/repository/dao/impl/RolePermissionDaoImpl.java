@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/11/14
  * @description 角色权限数据访问实现
  */
@@ -20,6 +20,7 @@ public class RolePermissionDaoImpl extends ServiceImpl<RolePermissionMapper, Rol
 
     /**
      * 根据角色ID查询权限ID列表
+     *
      * @param roleId 角色ID
      * @return 权限ID集合
      */

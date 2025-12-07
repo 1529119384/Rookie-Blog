@@ -5,11 +5,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * @author 李旭
+ * @author LX
  * @date 2025/12/04
  * @description 高效UUID工具类 (基于时间戳与签名)
  */
-public class UuidUtils {
+public class UUIDUtils {
 
     private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
 
@@ -21,7 +21,7 @@ public class UuidUtils {
      * 注意：如果在同一毫秒内使用相同参数调用，生成的UUID将相同。
      * </p>
      *
-     * @param params 参与签名的参数
+     * @param params 参与签名的参数 (null或空字符串将被忽略)
      * @return 32位UUID字符串
      */
     public static String signatureUuid(Object... params) {
