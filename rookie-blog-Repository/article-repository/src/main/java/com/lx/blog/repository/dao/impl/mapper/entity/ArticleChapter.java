@@ -24,8 +24,8 @@ public class ArticleChapter {
     /**
      * 章节ID
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id")
+    private String id;
 
     /**
      * 文章ID
@@ -61,7 +61,7 @@ public class ArticleChapter {
      * 父章节ID
      */
     @TableField("parent_id")
-    private Long parentId;
+    private String parentId;
 
     /**
      * 物化路径
