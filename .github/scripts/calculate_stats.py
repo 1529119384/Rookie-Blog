@@ -53,41 +53,26 @@ def get_contributor_stats():
     return sorted_contributors
 
 def generate_contributor_html(contributors):
-    """生成贡献者HTML列表 (使用表格布局 + 圆形头像代理)"""
+    """生成贡献者HTML列表 (流式布局 - 从左到右自动换行)"""
     
     html_content = """
 <div align="center">
-<table style="border-width:0; border:none; border-spacing:0; padding:0; margin:0;">
+<br/>
+<p>
 """
     
-    columns = 10  # 每行显示个数
-    
-    for i, (contributor, count) in enumerate(contributors):
-        if i % columns == 0:
-            html_content += "  <tr>\n"
-            
-        # 使用 wsrv.nl 进行图片处理：圆形裁切 + 缓存
-        # h=80&w=80: 设定尺寸
-        # mask=circle: 圆形遮罩
-        # fit=cover: 填充模式
-        avatar_url = f"https://wsrv.nl/?url=github.com/{contributor}.png&h=80&w=80&fit=cover&mask=circle"
+    for contributor, count in contributors:
+        # 图片处理：圆形裁切 + 高清
+        avatar_url = f"https://wsrv.nl/?url=github.com/{contributor}.png&h=120&w=120&fit=cover&mask=circle&q=80"
         profile_url = f"https://github.com/{contributor}"
         
-        html_content += f"""    <td align="center" style="border:none; padding: 10px;">
-      <a href="{profile_url}" title="{contributor}">
-        <img src="{avatar_url}" width="50" height="50" alt="{contributor}" />
-      </a>
-    </td>
-"""
-        
-        if (i + 1) % columns == 0:
-            html_content += "  </tr>\n"
+        # 纯流式布局
+        # style="margin: 5px" 用于增加间距
+        html_content += f"""<a href="{profile_url}" title="{contributor} ({count} contributions)">
+    <img src="{avatar_url}" width="60" height="60" alt="{contributor}" style="margin: 10px; display: inline-block;" />
+</a>"""
             
-    # 补全表格
-    if len(contributors) % columns != 0:
-        html_content += "  </tr>\n"
-        
-    html_content += "</table>\n</div>"
+    html_content += "\n</p>\n<br/>\n</div>"
     return html_content
 
 def update_readme(contributors):
@@ -108,7 +93,7 @@ def update_readme(contributors):
     stats_section = f"""
 <br>
 
-## 贡献者风采
+## <img src="https://api.iconify.design/mdi:account-group-outline.svg?color=%23000000" width="24" height="24" valign="bottom"> 贡献者风采
 
 感谢每一位参与 **Rookie Blog** 开发的贡献者，是你们让这个项目变得更好。
 
