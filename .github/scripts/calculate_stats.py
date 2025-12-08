@@ -83,7 +83,7 @@ def generate_svg(contributors):
       cursor: pointer;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }}
-    .group:hover .avatar {{
+    .avatar-group:hover .avatar {{
       transform: scale(1.1);
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
     }}
@@ -96,7 +96,7 @@ def generate_svg(contributors):
         transition: opacity 0.3s;
         pointer-events: none;
     }}
-    .group:hover text {{
+    .avatar-group:hover text {{
         opacity: 1;
         transform: translateY(5px);
     }}
@@ -130,8 +130,8 @@ def generate_svg(contributors):
         cy = y + avatar_size/2
         
         svg_content += f'''
-  <a xlink:href="{profile_url}" target="_blank">
-    <g class="group" transform="translate({x}, {y})">
+  <a xlink:href="{profile_url}" target="_top">
+    <g class="avatar-group" transform="translate({x}, {y})">
         <g class="avatar" transform-origin="{avatar_size/2} {avatar_size/2}">
             <image href="{img_href}" width="{avatar_size}" height="{avatar_size}" clip-path="url(#circle)" />
         </g>
@@ -173,7 +173,7 @@ def update_readme(contributors):
 
 <div align="center">
   <a href="https://github.com/{repo_name}/graphs/contributors">
-    <img src=".github/assets/contributors.svg" alt="Contributors" width="100%">
+    <img src="https://raw.githubusercontent.com/{repo_name}/main/.github/assets/contributors.svg" alt="Contributors" width="100%">
   </a>
 </div>
 """
