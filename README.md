@@ -192,22 +192,9 @@ git clone -b frontend https://github.com/patton174/Rookie-Blog.git frontend
 
 感谢每一位参与 **Rookie Blog** 开发的贡献者，是你们让这个项目变得更好。
 
-<table align="center" border="0">
-  <tr>
-    <td align="center">
-      <a href="https://github.com/mianqiqi" title="mianqiqi">
-        <img src="https://github.com/mianqiqi.png?size=100" width="50" height="50" alt="mianqiqi" style="border-radius: 50%;">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/1529119384" title="1529119384">
-        <img src="https://github.com/1529119384.png?size=100" width="50" height="50" alt="1529119384" style="border-radius: 50%;">
-      </a>
-    </td>
-  </tr>
-</table>
-
-<p align='right'><sub>Last updated: 2025-12-08</sub></p>
+<div align="center">
+  <img src=".github/assets/contributors.svg" alt="Contributors" width="100%">
+</div>
 
 <!-- CONTRIBUTOR_STATS_END -->
 
