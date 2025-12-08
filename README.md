@@ -184,6 +184,9 @@ git clone -b frontend https://github.com/patton174/Rookie-Blog.git frontend
 
 ---
 
+<!-- CONTRIBUTOR_STATS_START -->
+<!-- CONTRIBUTOR_STATS_END -->
+
 ## <img src="https://api.iconify.design/mdi:license.svg?color=%23000000" width="24" height="24" valign="bottom"> 开源协议
 
 本项目采用 [MIT License](LICENSE) 开源协议。
