@@ -83,7 +83,7 @@ def generate_svg(contributors):
       cursor: pointer;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }}
-    .avatar:hover {{
+    .group:hover .avatar {{
       transform: scale(1.1);
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
     }}
@@ -94,9 +94,11 @@ def generate_svg(contributors):
         text-anchor: middle;
         opacity: 0;
         transition: opacity 0.3s;
+        pointer-events: none;
     }}
     .group:hover text {{
         opacity: 1;
+        transform: translateY(5px);
     }}
   </style>
   <defs>
@@ -149,6 +151,7 @@ def generate_svg(contributors):
 def update_readme(contributors):
     """更新README.md文件"""
     target_file = os.getenv('TARGET_FILE', 'README.md')
+    repo_name = os.getenv('GITHUB_REPOSITORY', 'patton174/Rookie-Blog')
     
     # 首先生成SVG
     generate_svg(contributors)
@@ -169,7 +172,9 @@ def update_readme(contributors):
 感谢每一位参与 **Rookie Blog** 开发的贡献者，是你们让这个项目变得更好。
 
 <div align="center">
-  <img src=".github/assets/contributors.svg" alt="Contributors" width="100%">
+  <a href="https://github.com/{repo_name}/graphs/contributors">
+    <img src=".github/assets/contributors.svg" alt="Contributors" width="100%">
+  </a>
 </div>
 """
     
